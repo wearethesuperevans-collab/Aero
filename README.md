@@ -10,7 +10,7 @@ maximum-scale=1,
 user-scalable=no,
 viewport-fit=cover">
 
-<title>Frutiger Aero World 3D</title>
+<title>Frutiger Aero World</title>
 
 <style>
 *{
@@ -25,7 +25,7 @@ html,body{
   width:100%;
   height:100%;
   overflow:hidden;
-  background:#59dcff;
+  background:#43dfff;
   font-family:Arial,sans-serif;
 }
 
@@ -49,32 +49,34 @@ html,body{
   top:18px;
   left:20px;
   color:white;
-  font-size:24px;
+  font-size:23px;
   font-weight:900;
-  text-shadow:0 3px 7px #087da8;
+  text-shadow:
+    0 2px 4px rgba(0,80,130,.7),
+    0 0 12px rgba(255,255,255,.35);
 }
 
 #subtitle{
   position:absolute;
-  top:51px;
+  top:49px;
   left:21px;
   color:white;
   font-size:12px;
-  text-shadow:0 2px 5px #087da8;
+  text-shadow:0 2px 4px rgba(0,80,130,.7);
 }
 
 #joystick{
   position:absolute;
   left:22px;
   bottom:22px;
-  width:130px;
-  height:130px;
+  width:132px;
+  height:132px;
   border-radius:50%;
-  background:rgba(255,255,255,.22);
+  background:rgba(255,255,255,.20);
   border:3px solid rgba(255,255,255,.75);
   box-shadow:
-    0 8px 25px rgba(0,90,140,.22),
-    inset 0 0 20px rgba(255,255,255,.25);
+    0 10px 30px rgba(0,80,130,.25),
+    inset 0 0 25px rgba(255,255,255,.25);
   pointer-events:auto;
   touch-action:none;
 }
@@ -89,11 +91,13 @@ html,body{
   border-radius:50%;
   background:linear-gradient(
     145deg,
-    rgba(255,255,255,.95),
-    rgba(180,244,255,.7)
+    #ffffff,
+    #b8f5ff
   );
   border:3px solid white;
-  box-shadow:0 5px 18px rgba(0,100,150,.25);
+  box-shadow:
+    0 5px 18px rgba(0,80,130,.25),
+    inset 0 0 10px white;
 }
 
 #buttons{
@@ -110,35 +114,37 @@ button{
   border-radius:50%;
   border:3px solid white;
   color:white;
-  font-weight:900;
   font-size:11px;
+  font-weight:900;
   background:linear-gradient(
-    #91f7ff,
-    #20abd5
+    #a0f8ff,
+    #16a8d7
   );
-  box-shadow:0 7px 22px rgba(0,90,130,.3);
+  box-shadow:
+    0 8px 22px rgba(0,80,130,.3),
+    inset 0 3px 8px rgba(255,255,255,.55);
   pointer-events:auto;
   touch-action:none;
 }
 
 button:active{
-  transform:scale(.9);
+  transform:scale(.90);
 }
 
 #rotate{
   display:none;
   position:fixed;
   inset:0;
-  z-index:99;
+  z-index:100;
   background:linear-gradient(
-    #5ee3ff,
-    #c5fbff
+    #53e1ff,
+    #c7fbff
   );
   align-items:center;
   justify-content:center;
   flex-direction:column;
+  color:#08799e;
   text-align:center;
-  color:#087ba1;
   font-weight:900;
 }
 
@@ -183,7 +189,7 @@ button:active{
 <div id="rotate">
   <div id="rotateIcon">↔️</div>
   <div>TURN YOUR iPAD SIDEWAYS</div>
-  <small>Landscape gives you the full world.</small>
+  <small>Landscape mode gives you the full world.</small>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
@@ -199,7 +205,7 @@ document.getElementById("game");
 
 const renderer =
 new THREE.WebGLRenderer({
-  canvas:canvas,
+  canvas,
   antialias:true,
   powerPreference:"high-performance"
 });
@@ -209,33 +215,52 @@ renderer.setPixelRatio(
 );
 
 renderer.setSize(
-  window.innerWidth,
-  window.innerHeight
+  innerWidth,
+  innerHeight
 );
 
+renderer.outputColorSpace =
+THREE.SRGBColorSpace;
+
+renderer.toneMapping =
+THREE.ACESFilmicToneMapping;
+
+renderer.toneMappingExposure=1.18;
+
 renderer.shadowMap.enabled=true;
-renderer.shadowMap.type=
+
+renderer.shadowMap.type =
 THREE.PCFSoftShadowMap;
+
+
+/* =========================================================
+   SCENE
+   ========================================================= */
 
 const scene =
 new THREE.Scene();
 
 scene.background =
-new THREE.Color(0x61ddff);
+new THREE.Color(0x65ddff);
 
 scene.fog =
 new THREE.Fog(
-  0x61ddff,
-  100,
-  420
+  0x72e4ff,
+  120,
+  430
 );
+
+
+/* =========================================================
+   CAMERA
+   ========================================================= */
 
 const camera =
 new THREE.PerspectiveCamera(
-  65,
+  63,
   innerWidth/innerHeight,
   .1,
-  700
+  800
 );
 
 camera.position.set(
@@ -244,108 +269,142 @@ camera.position.set(
   18
 );
 
+
 /* =========================================================
-   LIGHT
+   LIGHTING
    ========================================================= */
 
-const hemisphere =
+const skyLight =
 new THREE.HemisphereLight(
-  0xe8ffff,
-  0x4ba76a,
-  2.5
+  0xeaffff,
+  0x348b55,
+  2.8
 );
 
-scene.add(hemisphere);
+scene.add(skyLight);
 
-const sunlight =
+
+const sun =
 new THREE.DirectionalLight(
   0xffffff,
-  3.5
+  4
 );
 
-sunlight.position.set(
-  -80,
-  120,
-  70
+sun.position.set(
+  -100,
+  150,
+  90
 );
 
-sunlight.castShadow=true;
+sun.castShadow=true;
 
-sunlight.shadow.mapSize.width=2048;
-sunlight.shadow.mapSize.height=2048;
+sun.shadow.mapSize.width=4096;
+sun.shadow.mapSize.height=4096;
 
-scene.add(sunlight);
+sun.shadow.camera.left=-150;
+sun.shadow.camera.right=150;
+sun.shadow.camera.top=150;
+sun.shadow.camera.bottom=-150;
+
+sun.shadow.bias=-.0003;
+
+scene.add(sun);
+
 
 /* =========================================================
    MATERIALS
    ========================================================= */
 
-const blueMaterial =
+const aeroBlue =
 new THREE.MeshPhysicalMaterial({
-  color:0x129fe0,
-  roughness:.14,
-  metalness:.05,
+  color:0x168fe1,
+  roughness:.13,
+  metalness:.03,
   clearcoat:1,
-  clearcoatRoughness:.08
+  clearcoatRoughness:.04
 });
 
-const blueGlass =
+
+const aeroGlass =
 new THREE.MeshPhysicalMaterial({
-  color:0x42d9ff,
-  roughness:.08,
-  metalness:.05,
-  transmission:.18,
+  color:0x27caff,
+  roughness:.09,
+  metalness:.02,
   transparent:true,
-  opacity:.94,
+  opacity:.96,
   clearcoat:1,
-  clearcoatRoughness:.05
+  clearcoatRoughness:.025
 });
 
-const cyanMaterial =
-new THREE.MeshPhysicalMaterial({
-  color:0x00e9f4,
-  roughness:.12,
-  clearcoat:1
+
+const cyanGlow =
+new THREE.MeshBasicMaterial({
+  color:0x00f3ff,
+  transparent:true,
+  opacity:.82
 });
 
-const whiteMaterial =
-new THREE.MeshPhysicalMaterial({
+
+const highlightMaterial =
+new THREE.MeshBasicMaterial({
   color:0xffffff,
-  roughness:.28,
-  clearcoat:1
+  transparent:true,
+  opacity:.76
 });
 
-const greenMaterial =
-new THREE.MeshStandardMaterial({
-  color:0x43d366,
-  roughness:.85
+
+const grassMaterial =
+new THREE.MeshPhysicalMaterial({
+  color:0x48d56b,
+  roughness:.78,
+  clearcoat:.3,
+  clearcoatRoughness:.4
 });
 
-const darkGreenMaterial =
+
+const dirtMaterial =
 new THREE.MeshStandardMaterial({
-  color:0x15994e,
-  roughness:.85
+  color:0x52a85d,
+  roughness:.95
 });
+
+
+const leafMaterial =
+new THREE.MeshPhysicalMaterial({
+  color:0x19a958,
+  roughness:.62,
+  clearcoat:.25
+});
+
+
+const trunkMaterial =
+new THREE.MeshStandardMaterial({
+  color:0xc58b4e,
+  roughness:.9
+});
+
 
 /* =========================================================
-   OCEAN
+   WATER
    ========================================================= */
 
 const waterGeometry =
 new THREE.PlaneGeometry(
-  800,
-  800,
-  120,
-  120
+  900,
+  900,
+  160,
+  160
 );
 
 const waterMaterial =
 new THREE.MeshPhysicalMaterial({
-  color:0x13bfe9,
-  roughness:.13,
+  color:0x0fbfe8,
+  roughness:.12,
   metalness:.08,
-  transmission:.08,
-  clearcoat:1
+  transparent:true,
+  opacity:.94,
+  clearcoat:1,
+  clearcoatRoughness:.06
 });
 
 const water =
@@ -355,75 +414,117 @@ new THREE.Mesh(
 );
 
 water.rotation.x=-Math.PI/2;
-water.position.y=-1.6;
+
+water.position.y=-1.55;
+
+water.receiveShadow=true;
 
 scene.add(water);
 
+
 /* =========================================================
-   ISLAND
+   ISLANDS
    ========================================================= */
 
-function createIsland(x,z,scale){
+const islands=[];
 
-  const group =
+function createIsland(
+  x,
+  z,
+  radius,
+  scale
+){
+
+  const island =
   new THREE.Group();
 
-  const rock =
+  /*
+    The top surface is ALWAYS at y=0.
+    Everything placed on the island uses
+    this same height.
+  */
+
+  const underside =
   new THREE.Mesh(
     new THREE.CylinderGeometry(
-      14*scale,
-      18*scale,
-      5*scale,
-      32
+      radius*.92*scale,
+      radius*1.28*scale,
+      4*scale,
+      48
     ),
-    new THREE.MeshStandardMaterial({
-      color:0x48aa61,
-      roughness:.9
-    })
+    dirtMaterial
   );
 
-  rock.position.y=.2;
-  rock.castShadow=true;
-  rock.receiveShadow=true;
+  underside.position.y=-1.8*scale;
 
-  group.add(rock);
+  underside.castShadow=true;
+  underside.receiveShadow=true;
 
-  const grass =
+  island.add(underside);
+
+
+  const top =
   new THREE.Mesh(
     new THREE.CylinderGeometry(
-      14*scale,
-      15*scale,
-      1.5*scale,
-      32
+      radius*scale,
+      radius*1.04*scale,
+      .75*scale,
+      48
     ),
-    greenMaterial
+    grassMaterial
   );
 
-  grass.position.y=
-  2.8*scale;
+  /*
+    Cylinder top is at y=0.
+  */
 
-  grass.castShadow=true;
+  top.position.y=-.375*scale;
 
-  group.add(grass);
+  top.castShadow=true;
+  top.receiveShadow=true;
 
-  group.position.set(
+  island.add(top);
+
+
+  island.position.set(
     x,
     0,
     z
   );
 
-  scene.add(group);
+  scene.add(island);
+
+  islands.push({
+    object:island,
+    radius:radius*scale,
+    x,
+    z
+  });
 }
 
-createIsland(0,0,1.4);
-createIsland(-70,-45,1.1);
-createIsland(65,-65,1.25);
-createIsland(90,50,.9);
-createIsland(-90,60,1);
+
+createIsland(0,0,16,1.0);
+createIsland(-70,-48,14,1.0);
+createIsland(67,-68,15,1.0);
+createIsland(88,52,12,1.0);
+createIsland(-95,65,13,1.0);
+
 
 /* =========================================================
    FRUTIGER AERO GUY
-   Based on the rounded glossy reference
+   =========================================================
+
+   IMPORTANT:
+   This is deliberately built around the shape
+   in the supplied reference:
+
+   - huge smooth spherical head
+   - smooth rounded torso
+   - no visible legs
+   - short rounded arms
+   - blue/cyan translucent body
+   - glossy white highlights
+   - simple clean silhouette
    ========================================================= */
 
 function createAeroGuy(){
@@ -431,228 +532,273 @@ function createAeroGuy(){
   const guy =
   new THREE.Group();
 
-  /* BODY */
+
+  /* ---------------- BODY ---------------- */
 
   const body =
   new THREE.Mesh(
     new THREE.SphereGeometry(
-      1.45,
-      32,
-      24
+      1,
+      64,
+      48
     ),
-    blueGlass
+    aeroGlass
   );
 
   body.scale.set(
-    1.18,
+    1.30,
     1.35,
-    .9
+    .92
   );
 
-  body.position.y=2.0;
+  /*
+    Bottom of sphere after scaling ≈ 0.65.
+    This prevents the body from disappearing
+    into the ground.
+  */
+
+  body.position.y=1.36;
 
   body.castShadow=true;
+  body.receiveShadow=true;
 
   guy.add(body);
 
-  /* LOWER BODY GLOW */
 
-  const glow =
+  /* ---------------- BODY INNER BLUE ---------------- */
+
+  const innerBody =
   new THREE.Mesh(
     new THREE.SphereGeometry(
-      1.15,
-      28,
-      20
+      .98,
+      48,
+      36
     ),
-    cyanMaterial
+    aeroBlue
   );
 
-  glow.scale.set(
-    1.15,
-    .42,
+  innerBody.scale.set(
+    1.25,
+    1.12,
     .88
   );
 
-  glow.position.set(
-    0,
-    1.25,
-    -.05
+  innerBody.position.y=1.31;
+
+  innerBody.material.transparent=true;
+  innerBody.material.opacity=.40;
+
+  guy.add(innerBody);
+
+
+  /* ---------------- CYAN LOWER GLOW ---------------- */
+
+  const lowerGlow =
+  new THREE.Mesh(
+    new THREE.SphereGeometry(
+      .92,
+      48,
+      32
+    ),
+    cyanGlow
   );
 
-  guy.add(glow);
+  lowerGlow.scale.set(
+    1.20,
+    .48,
+    .86
+  );
 
-  /* HEAD */
+  lowerGlow.position.set(
+    0,
+    .68,
+    -.08
+  );
+
+  guy.add(lowerGlow);
+
+
+  /* ---------------- HEAD ---------------- */
 
   const head =
   new THREE.Mesh(
     new THREE.SphereGeometry(
-      1.0,
-      32,
-      24
+      1,
+      64,
+      48
     ),
-    blueGlass
+    aeroGlass
   );
 
-  head.position.y=4.05;
+  head.scale.set(
+    1.03,
+    1.03,
+    1.03
+  );
+
+  /*
+    Head overlaps body slightly,
+    exactly like the rounded reference.
+  */
+
+  head.position.y=3.35;
 
   head.castShadow=true;
+  head.receiveShadow=true;
 
   guy.add(head);
 
-  /* HEAD HIGHLIGHT */
 
-  const highlight =
+  /* ---------------- HEAD INNER BLUE ---------------- */
+
+  const headInner =
   new THREE.Mesh(
     new THREE.SphereGeometry(
-      .32,
-      20,
-      16
+      .965,
+      48,
+      36
     ),
-    new THREE.MeshBasicMaterial({
-      color:0xffffff,
-      transparent:true,
-      opacity:.72
-    })
+    aeroBlue
   );
 
-  highlight.scale.set(
+  headInner.position.y=3.34;
+
+  headInner.material.transparent=true;
+  headInner.material.opacity=.28;
+
+  guy.add(headInner);
+
+
+  /* ---------------- HEAD GLOSS ---------------- */
+
+  const headGloss =
+  new THREE.Mesh(
+    new THREE.SphereGeometry(
+      .38,
+      32,
+      24
+    ),
+    highlightMaterial
+  );
+
+  headGloss.scale.set(
+    1.45,
+    .52,
+    .42
+  );
+
+  headGloss.position.set(
+    -.30,
+    3.78,
+    -.78
+  );
+
+  guy.add(headGloss);
+
+
+  /* ---------------- SECOND BODY GLOSS ---------------- */
+
+  const bodyGloss =
+  new THREE.Mesh(
+    new THREE.SphereGeometry(
+      .55,
+      32,
+      24
+    ),
+    highlightMaterial
+  );
+
+  bodyGloss.scale.set(
     1.35,
-    .45,
-    .45
+    .65,
+    .35
   );
 
-  highlight.position.set(
-    -.28,
-    4.45,
-    -.82
+  bodyGloss.position.set(
+    -.62,
+    1.93,
+    -.76
   );
 
-  guy.add(highlight);
+  bodyGloss.material.opacity=.42;
 
-  /* FACE GLOW */
+  guy.add(bodyGloss);
 
-  const faceGlow =
+
+  /* ---------------- LEFT ARM ---------------- */
+
+  const leftArm =
   new THREE.Mesh(
     new THREE.SphereGeometry(
-      .7,
-      24,
-      18
+      1,
+      48,
+      36
     ),
-    new THREE.MeshBasicMaterial({
-      color:0x8fffff,
-      transparent:true,
-      opacity:.18
-    })
+    aeroGlass
   );
 
-  faceGlow.scale.set(
-    1,
-    .65,
-    .25
+  leftArm.scale.set(
+    .42,
+    .88,
+    .48
   );
 
-  faceGlow.position.set(
-    0,
-    3.95,
-    -.83
+  leftArm.position.set(
+    -1.28,
+    1.48,
+    0
   );
 
-  guy.add(faceGlow);
+  leftArm.rotation.z=.22;
 
-  /* EYES */
+  leftArm.castShadow=true;
 
-  const eyeMaterial =
-  new THREE.MeshStandardMaterial({
-    color:0x00577c,
-    roughness:.15
-  });
+  guy.add(leftArm);
 
-  for(const side of [-1,1]){
 
-    const eye =
-    new THREE.Mesh(
-      new THREE.SphereGeometry(
-        .11,
-        16,
-        16
-      ),
-      eyeMaterial
-    );
+  /* ---------------- RIGHT ARM ---------------- */
 
-    eye.position.set(
-      side*.25,
-      4.02,
-      -.94
-    );
+  const rightArm =
+  new THREE.Mesh(
+    new THREE.SphereGeometry(
+      1,
+      48,
+      36
+    ),
+    aeroGlass
+  );
 
-    guy.add(eye);
-  }
+  rightArm.scale.set(
+    .42,
+    .88,
+    .48
+  );
 
-  /* ARMS */
+  rightArm.position.set(
+    1.28,
+    1.48,
+    0
+  );
 
-  for(const side of [-1,1]){
+  rightArm.rotation.z=-.22;
 
-    const arm =
-    new THREE.Mesh(
-      new THREE.SphereGeometry(
-        .55,
-        24,
-        18
-      ),
-      blueGlass
-    );
+  rightArm.castShadow=true;
 
-    arm.scale.set(
-      .55,
-      1.35,
-      .65
-    );
+  guy.add(rightArm);
 
-    arm.position.set(
-      side*1.35,
-      2.1,
-      0
-    );
 
-    arm.rotation.z=
-    side*.15;
+  /*
+    No legs.
+    No shoes.
+    No facial features.
 
-    arm.castShadow=true;
-
-    guy.add(arm);
-  }
-
-  /* SMALL BLUE FEET */
-
-  for(const side of [-1,1]){
-
-    const foot =
-    new THREE.Mesh(
-      new THREE.SphereGeometry(
-        .42,
-        20,
-        16
-      ),
-      blueMaterial
-    );
-
-    foot.scale.set(
-      1.1,
-      .55,
-      1.25
-    );
-
-    foot.position.set(
-      side*.55,
-      .85,
-      .05
-    );
-
-    guy.add(foot);
-  }
+    This keeps the silhouette much closer
+    to the supplied Frutiger-Aero character.
+  */
 
   return guy;
 }
+
 
 /* =========================================================
    PLAYER
@@ -661,38 +807,46 @@ function createAeroGuy(){
 const player =
 createAeroGuy();
 
+/*
+  Island top = y 0.
+  Character bottom ≈ 0.65.
+  So the character is lifted only enough
+  to sit naturally above the ground.
+*/
+
 player.position.set(
   0,
-  1.1,
-  8
+  -.55,
+  7
 );
 
 scene.add(player);
 
+
 /* =========================================================
-   OTHER AERO GUYS
+   OTHER GUYS
    ========================================================= */
 
 const otherGuys=[];
 
-const locations=[
-  [-8,2,-8],
-  [8,2,-13],
-  [-20,2,8],
-  [20,2,2],
-  [4,2,16]
+const positions=[
+  [-8,0,-7],
+  [8,0,-11],
+  [-19,0,7],
+  [20,0,2],
+  [4,0,14]
 ];
 
-locations.forEach((p)=>{
+positions.forEach((p)=>{
 
   const guy =
   createAeroGuy();
 
-  guy.scale.setScalar(.75);
+  guy.scale.setScalar(.72);
 
   guy.position.set(
     p[0],
-    p[1],
+    -.55,
     p[2]
   );
 
@@ -701,137 +855,176 @@ locations.forEach((p)=>{
   otherGuys.push(guy);
 });
 
+
 /* =========================================================
-   DOLPHIN
+   PALM TREES
    ========================================================= */
 
-function createDolphin(){
+function createPalm(
+  x,
+  z,
+  size
+){
 
-  const dolphin =
+  /*
+    Trees are placed at y=0,
+    which is the island top.
+
+    Their trunks therefore NEVER start
+    several units underground.
+  */
+
+  const tree =
   new THREE.Group();
 
-  const body =
+
+  const trunkHeight=
+  6.5*size;
+
+
+  const trunk =
   new THREE.Mesh(
-    new THREE.SphereGeometry(
-      1.35,
-      32,
-      22
+    new THREE.CylinderGeometry(
+      .28*size,
+      .48*size,
+      trunkHeight,
+      18
     ),
-    new THREE.MeshPhysicalMaterial({
-      color:0x48c8e9,
-      roughness:.18,
-      metalness:.12,
-      clearcoat:1
-    })
+    trunkMaterial
   );
 
-  body.scale.set(
-    2.2,
-    .72,
-    1
-  );
+  trunk.position.y=
+  trunkHeight/2;
 
-  dolphin.add(body);
+  trunk.castShadow=true;
+  trunk.receiveShadow=true;
 
-  const nose =
-  new THREE.Mesh(
-    new THREE.ConeGeometry(
-      .42,
-      1.7,
-      24
-    ),
-    blueMaterial
-  );
+  tree.add(trunk);
 
-  nose.rotation.z=-Math.PI/2;
 
-  nose.position.z=-2.15;
-
-  dolphin.add(nose);
-
-  const dorsal =
-  new THREE.Mesh(
-    new THREE.ConeGeometry(
-      .42,
-      1.4,
-      20
-    ),
-    blueMaterial
-  );
-
-  dorsal.rotation.z=Math.PI;
-
-  dorsal.position.y=.85;
-
-  dolphin.add(dorsal);
-
-  const tail =
+  const crown =
   new THREE.Group();
 
-  for(const side of [-1,1]){
+  crown.position.y=
+  trunkHeight;
 
-    const fin =
+  tree.add(crown);
+
+
+  for(let i=0;i<8;i++){
+
+    const angle=
+    i*Math.PI*2/8;
+
+    const leaf =
     new THREE.Mesh(
-      new THREE.ConeGeometry(
-        .5,
-        1.5,
-        20
+      new THREE.SphereGeometry(
+        1,
+        20,
+        12
       ),
-      blueMaterial
+      leafMaterial
     );
 
-    fin.rotation.z=
-    side*.75;
+    leaf.scale.set(
+      2.4*size,
+      .16*size,
+      .48*size
+    );
 
-    fin.position.x=
-    side*.45;
+    leaf.position.set(
+      Math.cos(angle)*1.35*size,
+      -.15*size,
+      Math.sin(angle)*1.35*size
+    );
 
-    tail.add(fin);
+    leaf.rotation.y=-angle;
+
+    leaf.rotation.z=
+    -.18;
+
+    leaf.castShadow=true;
+
+    crown.add(leaf);
   }
 
-  tail.position.z=2;
 
-  dolphin.add(tail);
+  tree.position.set(
+    x,
+    0,
+    z
+  );
 
-  return dolphin;
+  scene.add(tree);
 }
 
-const dolphin =
-createDolphin();
 
-dolphin.position.set(
-  0,
-  0,
-  -20
-);
+/*
+  Every tree is deliberately placed near
+  the TOP of the main island.
+*/
 
-scene.add(dolphin);
+const treePositions=[
+  [-8,3,.9],
+  [8,-3,.8],
+  [-5,-7,.72],
+  [6,8,.85],
+  [-11,-8,.72],
+  [12,7,.75],
+  [-2,10,.7],
+  [0,-10,.78],
+  [11,-11,.68],
+  [-12,9,.7]
+];
+
+treePositions.forEach(p=>{
+  createPalm(
+    p[0],
+    p[1],
+    p[2]
+  );
+});
+
 
 /* =========================================================
    CLOUDS
    ========================================================= */
 
-function createCloud(x,y,z,s){
+function createCloud(
+  x,
+  y,
+  z,
+  scale
+){
 
   const cloud =
   new THREE.Group();
 
-  for(let i=0;i<8;i++){
+  for(let i=0;i<9;i++){
 
     const puff =
     new THREE.Mesh(
       new THREE.SphereGeometry(
-        (1.5+Math.random()*1.5)*s,
-        20,
-        20
+        1,
+        32,
+        24
       ),
-      whiteMaterial
+      new THREE.MeshPhysicalMaterial({
+        color:0xffffff,
+        roughness:.35,
+        clearcoat:.7,
+        clearcoatRoughness:.15
+      })
+    );
+
+    puff.scale.setScalar(
+      (.9+Math.random()*.8)*scale
     );
 
     puff.position.set(
-      (i-3.5)*1.7*s,
-      Math.random()*1.4*s,
-      Math.random()*1.5*s
+      (i-4)*1.6*scale,
+      Math.random()*1.1*scale,
+      Math.random()*.9*scale
     );
 
     cloud.add(puff);
@@ -844,92 +1037,132 @@ function createCloud(x,y,z,s){
   scene.add(cloud);
 }
 
-createCloud(-50,38,-80,2);
-createCloud(50,45,-120,2.5);
-createCloud(105,32,15,1.6);
-createCloud(-120,35,70,2);
+
+createCloud(-50,42,-90,2.1);
+createCloud(55,46,-125,2.7);
+createCloud(110,34,10,1.7);
+createCloud(-125,37,70,2.2);
+
 
 /* =========================================================
-   PALM TREES
+   DOLPHIN
    ========================================================= */
 
-function createPalm(x,z,s){
+function createDolphin(){
 
-  const tree =
+  const dolphin =
   new THREE.Group();
 
-  const trunk =
+
+  const dolphinMaterial =
+  new THREE.MeshPhysicalMaterial({
+    color:0x49c7ea,
+    roughness:.14,
+    metalness:.1,
+    clearcoat:1,
+    clearcoatRoughness:.04
+  });
+
+
+  const body =
   new THREE.Mesh(
-    new THREE.CylinderGeometry(
-      .3*s,
-      .55*s,
-      7*s,
-      12
+    new THREE.SphereGeometry(
+      1,
+      48,
+      32
     ),
-    new THREE.MeshStandardMaterial({
-      color:0xc88746,
-      roughness:.9
-    })
+    dolphinMaterial
   );
 
-  trunk.position.y=4*s;
+  body.scale.set(
+    2.3,
+    .72,
+    1
+  );
 
-  tree.add(trunk);
+  body.castShadow=true;
 
-  for(let i=0;i<8;i++){
+  dolphin.add(body);
 
-    const leaf =
+
+  const nose =
+  new THREE.Mesh(
+    new THREE.ConeGeometry(
+      .42,
+      1.7,
+      24
+    ),
+    dolphinMaterial
+  );
+
+  nose.rotation.z=-Math.PI/2;
+
+  nose.position.z=-2.2;
+
+  dolphin.add(nose);
+
+
+  const fin =
+  new THREE.Mesh(
+    new THREE.ConeGeometry(
+      .45,
+      1.5,
+      20
+    ),
+    dolphinMaterial
+  );
+
+  fin.rotation.z=Math.PI;
+
+  fin.position.y=.85;
+
+  dolphin.add(fin);
+
+
+  const tail =
+  new THREE.Group();
+
+  for(const side of [-1,1]){
+
+    const f =
     new THREE.Mesh(
-      new THREE.CapsuleGeometry(
-        .18*s,
-        3*s,
-        5,
-        8
+      new THREE.ConeGeometry(
+        .5,
+        1.5,
+        20
       ),
-      darkGreenMaterial
+      dolphinMaterial
     );
 
-    const angle=
-    i*Math.PI*2/8;
+    f.rotation.z=
+    side*.75;
 
-    leaf.position.set(
-      Math.cos(angle)*1.7*s,
-      7.5*s,
-      Math.sin(angle)*1.7*s
-    );
+    f.position.x=
+    side*.45;
 
-    leaf.rotation.z=
-    Math.cos(angle)*.9;
-
-    leaf.rotation.x=
-    Math.sin(angle)*.9;
-
-    tree.add(leaf);
+    tail.add(f);
   }
 
-  tree.position.set(
-    x,
-    0,
-    z
-  );
+  tail.position.z=2.1;
 
-  scene.add(tree);
+  dolphin.add(tail);
+
+
+  return dolphin;
 }
 
-for(let i=0;i<22;i++){
 
-  const angle=
-  Math.random()*Math.PI*2;
+const dolphin =
+createDolphin();
 
-  const radius=
-  8+Math.random()*10;
+dolphin.position.set(
+  0,
+  -.3,
+  -20
+);
 
-  createPalm(
-    Math.cos(angle)*radius,
-    Math.sin(angle)*radius,
-    .7+Math.random()*.5
-  );
-}
+scene.add(dolphin);
+
 
 /* =========================================================
    BUBBLES
@@ -937,34 +1170,36 @@ for(let i=0;i<22;i++){
 
 const bubbles=[];
 
-for(let i=0;i<40;i++){
+for(let i=0;i<55;i++){
 
   const bubble =
   new THREE.Mesh(
     new THREE.SphereGeometry(
-      .25+Math.random()*.35,
-      18,
-      18
+      .2+Math.random()*.35,
+      24,
+      20
     ),
     new THREE.MeshPhysicalMaterial({
-      color:0xe7ffff,
+      color:0xeaffff,
       transparent:true,
-      opacity:.48,
+      opacity:.45,
       roughness:0,
+      transmission:.3,
       clearcoat:1
     })
   );
 
   bubble.position.set(
-    (Math.random()-.5)*140,
-    Math.random()*12,
-    (Math.random()-.5)*140
+    (Math.random()-.5)*160,
+    Math.random()*13,
+    (Math.random()-.5)*160
   );
 
   scene.add(bubble);
 
   bubbles.push(bubble);
 }
+
 
 /* =========================================================
    CONTROLS
@@ -981,6 +1216,7 @@ document.getElementById("joystick");
 const stick=
 document.getElementById("stick");
 
+
 joystick.addEventListener(
   "pointerdown",
   e=>{
@@ -995,6 +1231,7 @@ joystick.addEventListener(
   }
 );
 
+
 joystick.addEventListener(
   "pointermove",
   e=>{
@@ -1006,28 +1243,31 @@ joystick.addEventListener(
   }
 );
 
+
 joystick.addEventListener(
   "pointerup",
   resetJoystick
 );
+
 
 joystick.addEventListener(
   "pointercancel",
   resetJoystick
 );
 
+
 function updateJoystick(e){
 
-  const rect=
+  const r=
   joystick.getBoundingClientRect();
 
   let x=
   e.clientX-
-  (rect.left+rect.width/2);
+  (r.left+r.width/2);
 
   let y=
   e.clientY-
-  (rect.top+rect.height/2);
+  (r.top+r.height/2);
 
   const max=44;
 
@@ -1050,6 +1290,7 @@ function updateJoystick(e){
   )`;
 }
 
+
 function resetJoystick(){
 
   joystickPointer=null;
@@ -1060,6 +1301,7 @@ function resetJoystick(){
   stick.style.transform=
   "translate(-50%,-50%)";
 }
+
 
 /* =========================================================
    CAMERA
@@ -1073,6 +1315,7 @@ let cameraDragging=false;
 let previousX=0;
 let previousY=0;
 
+
 canvas.addEventListener(
   "pointerdown",
   e=>{
@@ -1083,6 +1326,7 @@ canvas.addEventListener(
     previousY=e.clientY;
   }
 );
+
 
 canvas.addEventListener(
   "pointermove",
@@ -1112,12 +1356,14 @@ canvas.addEventListener(
   }
 );
 
+
 canvas.addEventListener(
   "pointerup",
   ()=>{
     cameraDragging=false;
   }
 );
+
 
 canvas.addEventListener(
   "pointercancel",
@@ -1126,12 +1372,13 @@ canvas.addEventListener(
   }
 );
 
+
 /* =========================================================
    JUMP
    ========================================================= */
 
 let jumping=false;
-let verticalVelocity=0;
+let velocityY=0;
 
 function jump(){
 
@@ -1140,7 +1387,7 @@ function jump(){
 
   jumping=true;
 
-  verticalVelocity=10;
+  velocityY=10;
 }
 
 document
@@ -1150,8 +1397,9 @@ document
   jump
 );
 
+
 /* =========================================================
-   RIDE DOLPHIN
+   RIDE
    ========================================================= */
 
 let riding=false;
@@ -1180,7 +1428,7 @@ function toggleRide(){
 
     riding=false;
 
-    player.position.y=1.1;
+    player.position.y=-.55;
   }
 }
 
@@ -1190,6 +1438,7 @@ document
   "pointerdown",
   toggleRide
 );
+
 
 /* =========================================================
    KEYBOARD
@@ -1218,12 +1467,14 @@ window.addEventListener(
   }
 );
 
+
 /* =========================================================
    ANIMATION
    ========================================================= */
 
 const clock=
 new THREE.Clock();
+
 
 function animate(){
 
@@ -1240,9 +1491,10 @@ function animate(){
   const time=
   clock.elapsedTime;
 
-  /* -------------------------------------
+
+  /* -----------------------------------------
      KEYBOARD
-     ------------------------------------- */
+     ----------------------------------------- */
 
   let keyboardX=0;
   let keyboardZ=0;
@@ -1277,18 +1529,10 @@ function animate(){
   if(keyboardZ!==0)
     moveZ=keyboardZ;
 
-  /* -------------------------------------
-     CORRECT MOVEMENT DIRECTIONS
-     ------------------------------------- */
 
-  /*
-    IMPORTANT:
-
-    joystick UP    = forward
-    joystick DOWN  = backward
-    joystick LEFT  = left
-    joystick RIGHT = right
-  */
+  /* -----------------------------------------
+     MOVEMENT
+     ----------------------------------------- */
 
   const forward=
   new THREE.Vector3(
@@ -1326,12 +1570,13 @@ function animate(){
     )
   );
 
+
   if(movement.lengthSq()>0){
 
     movement.normalize();
 
     const speed=
-    riding ? 17 : 7;
+    riding ? 18 : 7;
 
     if(riding){
 
@@ -1349,39 +1594,33 @@ function animate(){
     }
   }
 
-  /* -------------------------------------
-     PLAYER ALWAYS FACES FORWARD
-     ------------------------------------- */
 
-  /*
-    The character does NOT rotate toward
-    the direction he is walking.
-
-    If you walk backward, he walks backward
-    while still facing forward.
-  */
+  /* -----------------------------------------
+     CHARACTER ALWAYS FACES FORWARD
+     ----------------------------------------- */
 
   player.rotation.y=
   cameraYaw;
 
-  /* -------------------------------------
+
+  /* -----------------------------------------
      JUMP
-     ------------------------------------- */
+     ----------------------------------------- */
 
   if(jumping){
 
-    verticalVelocity-=25*dt;
+    velocityY-=25*dt;
 
     if(riding){
 
       dolphin.position.y+=
-      verticalVelocity*dt;
+      velocityY*dt;
 
-      if(dolphin.position.y<=0){
+      if(dolphin.position.y<=-.3){
 
-        dolphin.position.y=0;
+        dolphin.position.y=-.3;
 
-        verticalVelocity=0;
+        velocityY=0;
 
         jumping=false;
       }
@@ -1389,28 +1628,30 @@ function animate(){
     }else{
 
       player.position.y+=
-      verticalVelocity*dt;
+      velocityY*dt;
 
-      if(player.position.y<=1.1){
+      if(player.position.y<=-.55){
 
-        player.position.y=1.1;
+        player.position.y=-.55;
 
-        verticalVelocity=0;
+        velocityY=0;
 
         jumping=false;
       }
     }
   }
 
-  /* -------------------------------------
-     DOLPHIN
-     ------------------------------------- */
 
-  dolphin.position.y+=
-  Math.sin(time*3)*.012;
+  /* -----------------------------------------
+     DOLPHIN
+     ----------------------------------------- */
 
   dolphin.rotation.z=
-  Math.sin(time*2.8)*.035;
+  Math.sin(time*2.5)*.035;
+
+  dolphin.position.y+=
+  Math.sin(time*3)*.008;
+
 
   if(riding){
 
@@ -1420,59 +1661,56 @@ function animate(){
 
     player.position.y+=2;
 
-    /*
-      Still facing the same forward
-      direction instead of turning
-      based on movement.
-    */
-
     player.rotation.y=
     cameraYaw;
   }
 
-  /* -------------------------------------
+
+  /* -----------------------------------------
      OTHER GUYS
-     ------------------------------------- */
+     ----------------------------------------- */
 
   otherGuys.forEach(
     (g,i)=>{
 
       g.position.y=
-      2+
+      -.55+
       Math.sin(
         time*1.5+i
-      )*.08;
+      )*.045;
 
       /*
-        Their faces stay forward too.
+        They remain facing forward.
       */
 
       g.rotation.y=
-      Math.sin(i)*.15;
+      0;
     }
   );
 
-  /* -------------------------------------
+
+  /* -----------------------------------------
      BUBBLES
-     ------------------------------------- */
+     ----------------------------------------- */
 
   bubbles.forEach(
     (b,i)=>{
 
       b.position.y+=
-      dt*(.3+(i%3)*.15);
+      dt*(.3+(i%4)*.13);
 
       b.rotation.y+=
-      dt*.4;
+      dt*.5;
 
       if(b.position.y>15)
         b.position.y=-1;
     }
   );
 
-  /* -------------------------------------
+
+  /* -----------------------------------------
      CAMERA
-     ------------------------------------- */
+     ----------------------------------------- */
 
   const target=
   riding
@@ -1480,7 +1718,7 @@ function animate(){
   : player;
 
   const distance=
-  riding ? 17 : 14;
+  riding ? 18 : 15;
 
   const desiredX=
   target.position.x-
@@ -1495,26 +1733,28 @@ function animate(){
   6+
   cameraPitch*7;
 
+
   camera.position.x=
   THREE.MathUtils.lerp(
     camera.position.x,
     desiredX,
-    .09
+    .085
   );
 
   camera.position.y=
   THREE.MathUtils.lerp(
     camera.position.y,
     desiredY,
-    .09
+    .085
   );
 
   camera.position.z=
   THREE.MathUtils.lerp(
     camera.position.z,
     desiredZ,
-    .09
+    .085
   );
+
 
   camera.lookAt(
     target.position.x,
@@ -1522,13 +1762,15 @@ function animate(){
     target.position.z
   );
 
-  /* -------------------------------------
+
+  /* -----------------------------------------
      WATER
-     ------------------------------------- */
+     ----------------------------------------- */
 
   water.position.y=
-  -1.6+
-  Math.sin(time)*.025;
+  -1.55+
+  Math.sin(time)*.018;
+
 
   renderer.render(
     scene,
@@ -1538,6 +1780,7 @@ function animate(){
 
 animate();
 
+
 /* =========================================================
    RESIZE
    ========================================================= */
@@ -1545,10 +1788,10 @@ animate();
 function resize(){
 
   const width=
-  window.innerWidth;
+  innerWidth;
 
   const height=
-  window.innerHeight;
+  innerHeight;
 
   camera.aspect=
   width/height;
@@ -1562,7 +1805,7 @@ function resize(){
 
   renderer.setPixelRatio(
     Math.min(
-      window.devicePixelRatio,
+      devicePixelRatio,
       2
     )
   );
