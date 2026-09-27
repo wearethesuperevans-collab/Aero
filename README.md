@@ -2,1011 +2,1572 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>Aero World</title>
+<meta name="viewport"
+      content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>Frutiger Aero World</title>
 
 <style>
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#62dfff}
-body{font-family:Arial,sans-serif;touch-action:none}
-canvas{display:block;width:100%;height:100%}
+html,body{
+    margin:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    background:#5bdcff;
+    touch-action:none;
+    font-family:Arial,sans-serif;
+}
 
-#hud{
- position:fixed;
- inset:0;
- pointer-events:none;
- color:white;
+canvas{
+    position:fixed;
+    inset:0;
+    width:100%;
+    height:100%;
+}
+
+#ui{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    color:white;
 }
 
 .glass{
- background:linear-gradient(135deg,rgba(255,255,255,.45),rgba(80,210,255,.18));
- border:2px solid rgba(255,255,255,.75);
- box-shadow:0 8px 25px rgba(0,100,160,.2),inset 0 1px 0 rgba(255,255,255,.8);
- backdrop-filter:blur(9px);
+    background:linear-gradient(
+        135deg,
+        rgba(255,255,255,.52),
+        rgba(110,220,255,.20)
+    );
+    border:1.5px solid rgba(255,255,255,.85);
+    box-shadow:
+        0 8px 25px rgba(0,80,130,.22),
+        inset 0 1px 3px rgba(255,255,255,.9);
+    backdrop-filter:blur(10px);
 }
 
-#title{
- position:absolute;
- top:14px;
- left:50%;
- transform:translateX(-50%);
- padding:9px 20px;
- border-radius:22px;
- font-size:20px;
- font-weight:bold;
- text-shadow:0 2px 4px #16749b;
+#logo{
+    position:absolute;
+    top:14px;
+    left:50%;
+    transform:translateX(-50%);
+    padding:10px 20px;
+    border-radius:25px;
+    font-weight:bold;
+    font-size:20px;
+    text-shadow:0 2px 5px #08749b;
 }
 
 #stats{
- position:absolute;
- top:14px;
- left:14px;
- padding:10px 14px;
- border-radius:18px;
- font-size:14px;
- text-shadow:0 1px 3px #146e92;
+    position:absolute;
+    top:14px;
+    left:14px;
+    padding:10px 14px;
+    border-radius:18px;
+    font-size:14px;
+    text-shadow:0 2px 4px #08749b;
+}
+
+#status{
+    position:absolute;
+    right:14px;
+    top:14px;
+    padding:10px 14px;
+    border-radius:18px;
+    display:none;
+    font-weight:bold;
 }
 
 #message{
- position:absolute;
- left:50%;
- bottom:24px;
- transform:translateX(-50%);
- padding:10px 16px;
- border-radius:18px;
- font-size:13px;
- white-space:nowrap;
- text-shadow:0 1px 3px #16749b;
+    position:absolute;
+    bottom:25px;
+    left:50%;
+    transform:translateX(-50%);
+    padding:9px 16px;
+    border-radius:18px;
+    font-size:13px;
+    white-space:nowrap;
 }
 
-#mount{
- position:absolute;
- right:14px;
- top:14px;
- padding:10px 14px;
- border-radius:18px;
- display:none;
- font-weight:bold;
+#joystick{
+    position:absolute;
+    left:20px;
+    bottom:22px;
+    width:125px;
+    height:125px;
+    border-radius:50%;
+    background:rgba(255,255,255,.16);
+    border:2px solid rgba(255,255,255,.65);
+    pointer-events:auto;
 }
 
-#joy{
- position:absolute;
- left:18px;
- bottom:20px;
- width:120px;
- height:120px;
- border-radius:50%;
- background:rgba(255,255,255,.17);
- border:2px solid rgba(255,255,255,.65);
- pointer-events:auto;
-}
-
-#stick{
- position:absolute;
- width:55px;
- height:55px;
- left:50%;
- top:50%;
- transform:translate(-50%,-50%);
- border-radius:50%;
- background:rgba(255,255,255,.65);
- border:2px solid white;
- box-shadow:0 4px 15px rgba(0,100,150,.3);
+#knob{
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:55px;
+    height:55px;
+    transform:translate(-50%,-50%);
+    border-radius:50%;
+    background:rgba(255,255,255,.65);
+    border:2px solid white;
+    box-shadow:0 5px 15px rgba(0,100,160,.3);
 }
 
 #buttons{
- position:absolute;
- right:18px;
- bottom:22px;
- display:flex;
- gap:12px;
- pointer-events:auto;
+    position:absolute;
+    right:18px;
+    bottom:25px;
+    display:flex;
+    gap:12px;
+    pointer-events:auto;
 }
 
-button{
- width:72px;
- height:72px;
- border-radius:50%;
- border:2px solid white;
- background:linear-gradient(#ffffffaa,#63dcff99);
- color:#08769d;
- font-weight:bold;
- box-shadow:0 6px 18px rgba(0,100,150,.3);
+.gameButton{
+    width:70px;
+    height:70px;
+    border-radius:50%;
+    border:2px solid white;
+    background:linear-gradient(
+        rgba(255,255,255,.72),
+        rgba(70,210,255,.55)
+    );
+    color:#05749d;
+    font-weight:bold;
+    box-shadow:0 7px 18px rgba(0,100,150,.3);
 }
 
-button:active{
- transform:scale(.92);
+.gameButton:active{
+    transform:scale(.9);
 }
 
-#crosshair{
- position:absolute;
- left:50%;
- top:50%;
- width:9px;
- height:9px;
- transform:translate(-50%,-50%);
- border:2px solid white;
- border-radius:50%;
- box-shadow:0 0 8px #087da9;
+#rotate{
+    position:absolute;
+    inset:0;
+    background:linear-gradient(#54d9ff,#b8f8ff);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    z-index:20;
+}
+
+#rotate div{
+    padding:25px;
+    border-radius:25px;
+    font-size:20px;
+    color:#08749a;
+}
+
+@media (orientation:portrait) and (max-width:600px){
+    #rotate{
+        display:flex;
+    }
 }
 </style>
 </head>
 
 <body>
 
-<canvas id="game"></canvas>
+<div id="rotate">
+    <div class="glass">
+        📱↔️<br><br>
+        Turn your iPad sideways<br>
+        for the full Aero World experience.
+    </div>
+</div>
 
-<div id="hud">
+<div id="ui">
 
- <div id="title" class="glass">
-   🌊 AERO WORLD
- </div>
+    <div id="logo" class="glass">
+        🌊 FRUTIGER AERO WORLD
+    </div>
 
- <div id="stats" class="glass">
-   💎 <span id="score">0</span>
-   &nbsp; 🌊 <span id="speed">0</span>
- </div>
+    <div id="stats" class="glass">
+        💎 <span id="score">0</span>
+        &nbsp;&nbsp;
+        🌊 <span id="speed">0</span>
+    </div>
 
- <div id="mount" class="glass">
-   🐬 DOLPHIN RIDE
- </div>
+    <div id="status" class="glass">
+        🐬 DOLPHIN RIDE
+    </div>
 
- <div id="message" class="glass">
-   Explore the ocean • Find the dolphin 🐬
- </div>
+    <div id="message" class="glass">
+        Explore the Aero World
+    </div>
 
- <div id="crosshair"></div>
+    <div id="joystick">
+        <div id="knob"></div>
+    </div>
 
- <div id="joy">
-   <div id="stick"></div>
- </div>
-
- <div id="buttons">
-   <button id="jump">JUMP</button>
-   <button id="ride">RIDE</button>
- </div>
+    <div id="buttons">
+        <button class="gameButton" id="jump">JUMP</button>
+        <button class="gameButton" id="ride">RIDE</button>
+    </div>
 
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+
 <script>
-const canvas=document.getElementById("game");
-const ctx=canvas.getContext("2d");
 
-let W=innerWidth;
-let H=innerHeight;
-let DPR=Math.min(devicePixelRatio||1,2);
+/* =========================================================
+   FRUTIGER AERO WORLD
+   Real WebGL 3D
+========================================================= */
 
-function resize(){
- W=innerWidth;
- H=innerHeight;
- canvas.width=W*DPR;
- canvas.height=H*DPR;
- canvas.style.width=W+"px";
- canvas.style.height=H+"px";
- ctx.setTransform(DPR,0,0,DPR,0,0);
-}
+let scene;
+let camera;
+let renderer;
+let clock;
 
-addEventListener("resize",resize);
-resize();
-
-const scoreEl=document.getElementById("score");
-const speedEl=document.getElementById("speed");
-const message=document.getElementById("message");
-const mountUI=document.getElementById("mount");
+let player;
+let dolphin;
 
 let score=0;
-let time=0;
+let riding=false;
 
-const player={
- x:0,
- z:0,
- y:0,
- vx:0,
- vz:0,
- vy:0,
- riding:false,
- jump:false
-};
+let velocity=new THREE.Vector3();
+let verticalVelocity=0;
 
-const dolphin={
- x:250,
- z:-250,
- y:0,
- phase:0
-};
+let cameraYaw=0;
+let cameraPitch=.32;
 
-const islands=[];
-const bubbles=[];
-const fish=[];
-const clouds=[];
-const trees=[];
-const crystals=[];
+let joystickX=0;
+let joystickY=0;
 
-function rand(a,b){
- return a+Math.random()*(b-a);
-}
+let cameraTouch=false;
+let cameraTouchX=0;
+let cameraTouchY=0;
 
-/* islands */
+const scoreText=document.getElementById("score");
+const speedText=document.getElementById("speed");
+const status=document.getElementById("status");
+const message=document.getElementById("message");
 
-for(let i=0;i<18;i++){
- islands.push({
-  x:rand(-1500,1500),
-  z:rand(-1700,800),
-  r:rand(90,210),
-  hue:rand(0,1)
- });
-}
+init();
+animate();
 
-/* bubbles */
 
-for(let i=0;i<140;i++){
- bubbles.push({
-  x:rand(-1800,1800),
-  z:rand(-1800,1000),
-  y:rand(0,500),
-  s:rand(2,9),
-  speed:rand(.2,1)
- });
-}
+/* =========================================================
+   RENDERER
+========================================================= */
 
-/* fish */
+function init(){
 
-for(let i=0;i<45;i++){
- fish.push({
-  x:rand(-1600,1600),
-  z:rand(-1600,1000),
-  y:rand(30,280),
-  dir:Math.random()<.5?-1:1,
-  speed:rand(.3,1.2),
-  size:rand(7,15)
- });
-}
+    scene=new THREE.Scene();
 
-/* clouds */
+    scene.background=new THREE.Color(0x69dcff);
 
-for(let i=0;i<25;i++){
- clouds.push({
-  x:rand(-2000,2000),
-  z:rand(-2500,1000),
-  y:rand(350,700),
-  s:rand(.7,1.8)
- });
-}
+    scene.fog=new THREE.Fog(0x69dcff,250,1800);
 
-/* trees */
+    camera=new THREE.PerspectiveCamera(
+        65,
+        innerWidth/innerHeight,
+        .1,
+        3000
+    );
 
-for(let i=0;i<80;i++){
- let a=rand(0,Math.PI*2);
- let d=rand(80,1600);
+    camera.position.set(0,70,130);
 
- trees.push({
-  x:Math.cos(a)*d,
-  z:Math.sin(a)*d,
-  s:rand(.7,1.4)
- });
-}
+    renderer=new THREE.WebGLRenderer({
+        antialias:true,
+        powerPreference:"high-performance"
+    });
 
-/* crystals */
+    renderer.setPixelRatio(Math.min(devicePixelRatio,2));
 
-for(let i=0;i<70;i++){
- crystals.push({
-  x:rand(-1600,1600),
-  z:rand(-1700,900),
-  y:0,
-  rot:rand(0,6)
- });
+    renderer.setSize(innerWidth,innerHeight);
+
+    renderer.shadowMap.enabled=true;
+
+    renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+
+    renderer.outputColorSpace=THREE.SRGBColorSpace;
+
+    document.body.prepend(renderer.domElement);
+
+    clock=new THREE.Clock();
+
+    setupLights();
+    setupSky();
+    setupOcean();
+    setupIslands();
+    setupClouds();
+    setupCharacters();
+    setupDolphin();
+    setupCollectibles();
+    setupUI();
+
+    addEventListener("resize",resize);
 }
 
 
-/* joystick */
+/* =========================================================
+   LIGHTING
+========================================================= */
 
-const joy=document.getElementById("joy");
-const stick=document.getElementById("stick");
+function setupLights(){
 
-let joyX=0;
-let joyY=0;
-let joyActive=false;
+    const hemi=new THREE.HemisphereLight(
+        0xcfffff,
+        0x3c9a68,
+        2.5
+    );
 
-function setJoy(e){
- const r=joy.getBoundingClientRect();
- let x=e.clientX-r.left-r.width/2;
- let y=e.clientY-r.top-r.height/2;
+    scene.add(hemi);
 
- const max=43;
- const len=Math.hypot(x,y);
+    const sun=new THREE.DirectionalLight(
+        0xffffff,
+        3
+    );
 
- if(len>max){
-  x=x/len*max;
-  y=y/len*max;
- }
+    sun.position.set(-300,500,-250);
 
- joyX=x/max;
- joyY=y/max;
+    sun.castShadow=true;
 
- stick.style.left=`calc(50% + ${x}px)`;
- stick.style.top=`calc(50% + ${y}px)`;
+    sun.shadow.mapSize.width=2048;
+    sun.shadow.mapSize.height=2048;
+
+    sun.shadow.camera.left=-700;
+    sun.shadow.camera.right=700;
+    sun.shadow.camera.top=700;
+    sun.shadow.camera.bottom=-700;
+
+    scene.add(sun);
 }
 
-joy.addEventListener("pointerdown",e=>{
- joyActive=true;
- joy.setPointerCapture(e.pointerId);
- setJoy(e);
-});
 
-joy.addEventListener("pointermove",e=>{
- if(joyActive)setJoy(e);
-});
+/* =========================================================
+   SKY
+========================================================= */
 
-joy.addEventListener("pointerup",()=>{
- joyActive=false;
- joyX=0;
- joyY=0;
- stick.style.left="50%";
- stick.style.top="50%";
-});
+function setupSky(){
+
+    const skyGeo=new THREE.SphereGeometry(
+        2200,
+        32,
+        32
+    );
+
+    const skyMat=new THREE.MeshBasicMaterial({
+        color:0x63dfff,
+        side:THREE.BackSide
+    });
+
+    const sky=new THREE.Mesh(
+        skyGeo,
+        skyMat
+    );
+
+    scene.add(sky);
+
+    /* giant glowing sun */
+
+    const sunCanvas=document.createElement("canvas");
+
+    sunCanvas.width=256;
+    sunCanvas.height=256;
+
+    const sctx=sunCanvas.getContext("2d");
+
+    const gradient=sctx.createRadialGradient(
+        128,128,5,
+        128,128,125
+    );
+
+    gradient.addColorStop(0,"rgba(255,255,255,1)");
+    gradient.addColorStop(.25,"rgba(255,255,255,.8)");
+    gradient.addColorStop(1,"rgba(255,255,255,0)");
+
+    sctx.fillStyle=gradient;
+    sctx.fillRect(0,0,256,256);
+
+    const texture=new THREE.CanvasTexture(sunCanvas);
+
+    const sunSprite=new THREE.Sprite(
+        new THREE.SpriteMaterial({
+            map:texture,
+            transparent:true
+        })
+    );
+
+    sunSprite.position.set(-500,600,-900);
+    sunSprite.scale.set(500,500,1);
+
+    scene.add(sunSprite);
+}
 
 
-/* keyboard */
+/* =========================================================
+   WATER
+========================================================= */
+
+function setupOcean(){
+
+    const geometry=new THREE.PlaneGeometry(
+        4000,
+        4000,
+        100,
+        100
+    );
+
+    const material=new THREE.MeshPhysicalMaterial({
+        color:0x12bce8,
+        roughness:.12,
+        metalness:.05,
+        transmission:.05,
+        transparent:true,
+        opacity:.91
+    });
+
+    const ocean=new THREE.Mesh(
+        geometry,
+        material
+    );
+
+    ocean.rotation.x=-Math.PI/2;
+
+    ocean.position.y=-3;
+
+    ocean.receiveShadow=true;
+
+    ocean.userData.water=true;
+
+    scene.add(ocean);
+
+    /* floating white highlights */
+
+    for(let i=0;i<150;i++){
+
+        const geometry=new THREE.SphereGeometry(
+            THREE.MathUtils.randFloat(.5,2.2),
+            8,
+            8
+        );
+
+        const material=new THREE.MeshBasicMaterial({
+            color:0xffffff,
+            transparent:true,
+            opacity:.3
+        });
+
+        const bubble=new THREE.Mesh(
+            geometry,
+            material
+        );
+
+        bubble.position.set(
+            THREE.MathUtils.randFloatSpread(1800),
+            THREE.MathUtils.randFloat(-1,8),
+            THREE.MathUtils.randFloatSpread(1800)
+        );
+
+        scene.add(bubble);
+    }
+}
+
+
+/* =========================================================
+   ISLANDS
+========================================================= */
+
+function setupIslands(){
+
+    for(let i=0;i<18;i++){
+
+        const x=THREE.MathUtils.randFloatSpread(1800);
+        const z=THREE.MathUtils.randFloatSpread(1600);
+
+        const radius=THREE.MathUtils.randFloat(55,150);
+
+        createIsland(x,z,radius);
+    }
+}
+
+
+function createIsland(x,z,r){
+
+    const group=new THREE.Group();
+
+    group.position.set(x,0,z);
+
+    /* sand */
+
+    const sandGeometry=new THREE.CylinderGeometry(
+        r,
+        r*1.2,
+        18,
+        32
+    );
+
+    const sandMaterial=new THREE.MeshStandardMaterial({
+        color:0xf3df91,
+        roughness:.8
+    });
+
+    const sand=new THREE.Mesh(
+        sandGeometry,
+        sandMaterial
+    );
+
+    sand.position.y=3;
+
+    sand.castShadow=true;
+    sand.receiveShadow=true;
+
+    group.add(sand);
+
+    /* grass */
+
+    const grassGeometry=new THREE.CylinderGeometry(
+        r*.9,
+        r*1.05,
+        9,
+        32
+    );
+
+    const grassMaterial=new THREE.MeshStandardMaterial({
+        color:0x43c866,
+        roughness:.7
+    });
+
+    const grass=new THREE.Mesh(
+        grassGeometry,
+        grassMaterial
+    );
+
+    grass.position.y=14;
+
+    grass.castShadow=true;
+
+    group.add(grass);
+
+    /* futuristic glass dome */
+
+    const domeGeometry=new THREE.SphereGeometry(
+        r*.25,
+        24,
+        16,
+        0,
+        Math.PI*2,
+        0,
+        Math.PI/2
+    );
+
+    const domeMaterial=new THREE.MeshPhysicalMaterial({
+        color:0x9ef4ff,
+        transparent:true,
+        opacity:.58,
+        roughness:.05,
+        metalness:.05,
+        transmission:.25
+    });
+
+    const dome=new THREE.Mesh(
+        domeGeometry,
+        domeMaterial
+    );
+
+    dome.position.y=25;
+
+    dome.castShadow=true;
+
+    group.add(dome);
+
+    /* center crystal */
+
+    const crystal=new THREE.Mesh(
+        new THREE.OctahedronGeometry(r*.13),
+        new THREE.MeshPhysicalMaterial({
+            color:0x66efff,
+            emissive:0x0bbbdc,
+            emissiveIntensity:.5,
+            transparent:true,
+            opacity:.82
+        })
+    );
+
+    crystal.position.y=42;
+
+    group.add(crystal);
+
+    /* palm trees */
+
+    for(let i=0;i<4;i++){
+
+        const palm=createPalm();
+
+        palm.position.set(
+            THREE.MathUtils.randFloatSpread(r*1.2),
+            17,
+            THREE.MathUtils.randFloatSpread(r*1.2)
+        );
+
+        palm.scale.setScalar(
+            THREE.MathUtils.randFloat(.7,1.2)
+        );
+
+        group.add(palm);
+    }
+
+    scene.add(group);
+}
+
+
+function createPalm(){
+
+    const group=new THREE.Group();
+
+    const trunk=new THREE.Mesh(
+        new THREE.CylinderGeometry(.8,1.2,15,10),
+        new THREE.MeshStandardMaterial({
+            color:0x9c713e
+        })
+    );
+
+    trunk.position.y=7;
+
+    group.add(trunk);
+
+    const leafMaterial=new THREE.MeshStandardMaterial({
+        color:0x27b85b,
+        side:THREE.DoubleSide
+    });
+
+    for(let i=0;i<7;i++){
+
+        const leaf=new THREE.Mesh(
+            new THREE.ConeGeometry(
+                .9,
+                8,
+                6
+            ),
+            leafMaterial
+        );
+
+        leaf.rotation.z=Math.PI/2;
+        leaf.rotation.y=(i/7)*Math.PI*2;
+
+        leaf.position.y=14;
+
+        group.add(leaf);
+    }
+
+    return group;
+}
+
+
+/* =========================================================
+   CLOUDS
+========================================================= */
+
+function setupClouds(){
+
+    for(let i=0;i<35;i++){
+
+        const cloud=new THREE.Group();
+
+        const amount=THREE.MathUtils.randInt(5,11);
+
+        for(let j=0;j<amount;j++){
+
+            const sphere=new THREE.Mesh(
+                new THREE.SphereGeometry(
+                    THREE.MathUtils.randFloat(18,38),
+                    16,
+                    16
+                ),
+                new THREE.MeshStandardMaterial({
+                    color:0xffffff,
+                    roughness:.9
+                })
+            );
+
+            sphere.position.set(
+                THREE.MathUtils.randFloat(-55,55),
+                THREE.MathUtils.randFloat(-15,15),
+                THREE.MathUtils.randFloat(-30,30)
+            );
+
+            cloud.add(sphere);
+        }
+
+        cloud.position.set(
+            THREE.MathUtils.randFloatSpread(2500),
+            THREE.MathUtils.randFloat(280,550),
+            THREE.MathUtils.randFloatSpread(2200)
+        );
+
+        const scale=THREE.MathUtils.randFloat(.7,2);
+
+        cloud.scale.setScalar(scale);
+
+        scene.add(cloud);
+    }
+}
+
+
+/* =========================================================
+   PLAYER
+========================================================= */
+
+function createCharacter(color=0x36b9e8){
+
+    const group=new THREE.Group();
+
+    /* legs */
+
+    const legMaterial=new THREE.MeshStandardMaterial({
+        color:0xffffff,
+        roughness:.35
+    });
+
+    const legGeo=new THREE.CapsuleGeometry(
+        3,
+        12,
+        6,
+        12
+    );
+
+    const leg1=new THREE.Mesh(legGeo,legMaterial);
+    const leg2=new THREE.Mesh(legGeo,legMaterial);
+
+    leg1.position.set(-4,10,0);
+    leg2.position.set(4,10,0);
+
+    group.add(leg1,leg2);
+
+    /* shoes */
+
+    const shoeMat=new THREE.MeshStandardMaterial({
+        color:0x0f7bb0,
+        roughness:.25
+    });
+
+    const shoeGeo=new THREE.SphereGeometry(4,16,12);
+
+    const shoe1=new THREE.Mesh(shoeGeo,shoeMat);
+    const shoe2=new THREE.Mesh(shoeGeo,shoeMat);
+
+    shoe1.scale.z=1.5;
+    shoe2.scale.z=1.5;
+
+    shoe1.position.set(-4,3,2);
+    shoe2.position.set(4,3,2);
+
+    group.add(shoe1,shoe2);
+
+    /* torso */
+
+    const torso=new THREE.Mesh(
+        new THREE.CapsuleGeometry(7,14,8,16),
+        new THREE.MeshStandardMaterial({
+            color:color,
+            roughness:.3,
+            metalness:.05
+        })
+    );
+
+    torso.position.y=27;
+
+    group.add(torso);
+
+    /* arms */
+
+    const armGeo=new THREE.CapsuleGeometry(
+        2.5,
+        11,
+        6,
+        10
+    );
+
+    const armMat=new THREE.MeshStandardMaterial({
+        color:color,
+        roughness:.3
+    });
+
+    const leftArm=new THREE.Mesh(armGeo,armMat);
+    const rightArm=new THREE.Mesh(armGeo,armMat);
+
+    leftArm.position.set(-10,28,0);
+    rightArm.position.set(10,28,0);
+
+    leftArm.rotation.z=-.12;
+    rightArm.rotation.z=.12;
+
+    group.add(leftArm,rightArm);
+
+    /* hands */
+
+    const handMat=new THREE.MeshStandardMaterial({
+        color:0xffd0a7,
+        roughness:.5
+    });
+
+    const handGeo=new THREE.SphereGeometry(3.2,16,12);
+
+    const hand1=new THREE.Mesh(handGeo,handMat);
+    const hand2=new THREE.Mesh(handGeo,handMat);
+
+    hand1.position.set(-11,19,0);
+    hand2.position.set(11,19,0);
+
+    group.add(hand1,hand2);
+
+    /* head */
+
+    const head=new THREE.Mesh(
+        new THREE.SphereGeometry(8.5,24,18),
+        new THREE.MeshStandardMaterial({
+            color:0xffd0a7,
+            roughness:.55
+        })
+    );
+
+    head.position.y=47;
+
+    group.add(head);
+
+    /* hair */
+
+    const hair=new THREE.Mesh(
+        new THREE.SphereGeometry(8.8,20,12),
+        new THREE.MeshStandardMaterial({
+            color:0x164d5f,
+            roughness:.65
+        })
+    );
+
+    hair.scale.y=.6;
+    hair.position.set(0,52,0);
+
+    group.add(hair);
+
+    /* eyes */
+
+    const eyeMat=new THREE.MeshStandardMaterial({
+        color:0x073b55,
+        emissive:0x0b6f96,
+        emissiveIntensity:.25
+    });
+
+    const eyeGeo=new THREE.SphereGeometry(1.4,12,8);
+
+    const eye1=new THREE.Mesh(eyeGeo,eyeMat);
+    const eye2=new THREE.Mesh(eyeGeo,eyeMat);
+
+    eye1.position.set(-3,48,7.3);
+    eye2.position.set(3,48,7.3);
+
+    group.add(eye1,eye2);
+
+    /* smile */
+
+    const smile=new THREE.Mesh(
+        new THREE.TorusGeometry(
+            2.2,
+            .35,
+            8,
+            20,
+            Math.PI
+        ),
+        new THREE.MeshBasicMaterial({
+            color:0x9c3f54
+        })
+    );
+
+    smile.position.set(0,44.5,7.6);
+    smile.rotation.x=Math.PI/2;
+
+    group.add(smile);
+
+    group.userData={
+        leftArm,
+        rightArm,
+        leftLeg:leg1,
+        rightLeg:leg2
+    };
+
+    return group;
+}
+
+
+function setupCharacters(){
+
+    player=createCharacter(0x23b9df);
+
+    player.position.set(0,0,0);
+
+    scene.add(player);
+
+    /* Aero citizens */
+
+    for(let i=0;i<12;i++){
+
+        const npc=createCharacter(
+            [0x32c4e8,0x6ddc77,0xffc94a,0xc878ff][i%4]
+        );
+
+        npc.scale.setScalar(.75);
+
+        npc.position.set(
+            THREE.MathUtils.randFloatSpread(1000),
+            0,
+            THREE.MathUtils.randFloatSpread(1000)
+        );
+
+        npc.userData.phase=Math.random()*10;
+
+        scene.add(npc);
+    }
+}
+
+
+/* =========================================================
+   DOLPHIN
+========================================================= */
+
+function setupDolphin(){
+
+    dolphin=new THREE.Group();
+
+    /* body */
+
+    const body=new THREE.Mesh(
+        new THREE.SphereGeometry(15,32,20),
+        new THREE.MeshPhysicalMaterial({
+            color:0x65c9e8,
+            roughness:.22,
+            metalness:.05
+        })
+    );
+
+    body.scale.set(2.2,.72,.8);
+
+    dolphin.add(body);
+
+    /* snout */
+
+    const snout=new THREE.Mesh(
+        new THREE.SphereGeometry(6,20,12),
+        new THREE.MeshPhysicalMaterial({
+            color:0x58bddc,
+            roughness:.2
+        })
+    );
+
+    snout.scale.set(1.6,.45,.5);
+    snout.position.set(30,0,0);
+
+    dolphin.add(snout);
+
+    /* dorsal fin */
+
+    const fin=new THREE.Mesh(
+        new THREE.ConeGeometry(7,14,4),
+        new THREE.MeshStandardMaterial({
+            color:0x45aaca
+        })
+    );
+
+    fin.rotation.z=Math.PI/2;
+    fin.position.set(-2,10,0);
+
+    dolphin.add(fin);
+
+    /* side fins */
+
+    const fin1=fin.clone();
+    const fin2=fin.clone();
+
+    fin1.scale.set(.6,.6,.6);
+    fin2.scale.set(.6,.6,.6);
+
+    fin1.position.set(3,-1,11);
+    fin2.position.set(3,-1,-11);
+
+    fin1.rotation.z=-Math.PI/2;
+    fin2.rotation.z=-Math.PI/2;
+
+    dolphin.add(fin1,fin2);
+
+    /* tail */
+
+    const tail=new THREE.Group();
+
+    const tail1=new THREE.Mesh(
+        new THREE.ConeGeometry(8,14,4),
+        new THREE.MeshStandardMaterial({
+            color:0x45aaca
+        })
+    );
+
+    const tail2=tail1.clone();
+
+    tail1.rotation.z=-Math.PI/2;
+    tail2.rotation.z=-Math.PI/2;
+
+    tail1.position.y=7;
+    tail2.position.y=-7;
+
+    tail.add(tail1,tail2);
+
+    tail.position.x=-35;
+
+    dolphin.add(tail);
+
+    /* eyes */
+
+    const eyeMat=new THREE.MeshStandardMaterial({
+        color:0x082f48
+    });
+
+    const e1=new THREE.Mesh(
+        new THREE.SphereGeometry(1.8,12,8),
+        eyeMat
+    );
+
+    const e2=e1.clone();
+
+    e1.position.set(24,5,7);
+    e2.position.set(24,5,-7);
+
+    dolphin.add(e1,e2);
+
+    dolphin.position.set(100,15,-180);
+
+    scene.add(dolphin);
+}
+
+
+/* =========================================================
+   COLLECTIBLES
+========================================================= */
+
+const collectibles=[];
+
+function setupCollectibles(){
+
+    for(let i=0;i<45;i++){
+
+        const crystal=new THREE.Mesh(
+            new THREE.OctahedronGeometry(4,1),
+            new THREE.MeshPhysicalMaterial({
+                color:0x65f4ff,
+                emissive:0x00b9df,
+                emissiveIntensity:.7,
+                transparent:true,
+                opacity:.88,
+                roughness:.05
+            })
+        );
+
+        crystal.position.set(
+            THREE.MathUtils.randFloatSpread(1500),
+            THREE.MathUtils.randFloat(8,35),
+            THREE.MathUtils.randFloatSpread(1400)
+        );
+
+        scene.add(crystal);
+
+        collectibles.push(crystal);
+    }
+}
+
+
+/* =========================================================
+   UI
+========================================================= */
+
+function setupUI(){
+
+    const joystick=document.getElementById("joystick");
+    const knob=document.getElementById("knob");
+
+    let active=false;
+
+    function moveJoystick(e){
+
+        const rect=joystick.getBoundingClientRect();
+
+        let x=e.clientX-rect.left-rect.width/2;
+        let y=e.clientY-rect.top-rect.height/2;
+
+        const max=45;
+
+        const length=Math.hypot(x,y);
+
+        if(length>max){
+
+            x=x/length*max;
+            y=y/length*max;
+        }
+
+        joystickX=x/max;
+        joystickY=y/max;
+
+        knob.style.left=`calc(50% + ${x}px)`;
+        knob.style.top=`calc(50% + ${y}px)`;
+    }
+
+    joystick.addEventListener("pointerdown",e=>{
+
+        active=true;
+        joystick.setPointerCapture(e.pointerId);
+
+        moveJoystick(e);
+    });
+
+    joystick.addEventListener("pointermove",e=>{
+
+        if(active)moveJoystick(e);
+    });
+
+    joystick.addEventListener("pointerup",()=>{
+
+        active=false;
+
+        joystickX=0;
+        joystickY=0;
+
+        knob.style.left="50%";
+        knob.style.top="50%";
+    });
+
+
+    /* camera swipe */
+
+    renderer.domElement.addEventListener("pointerdown",e=>{
+
+        if(e.clientX<160)return;
+
+        cameraTouch=true;
+
+        cameraTouchX=e.clientX;
+        cameraTouchY=e.clientY;
+    });
+
+    renderer.domElement.addEventListener("pointermove",e=>{
+
+        if(!cameraTouch)return;
+
+        const dx=e.clientX-cameraTouchX;
+        const dy=e.clientY-cameraTouchY;
+
+        cameraYaw-=dx*.006;
+        cameraPitch-=dy*.004;
+
+        cameraPitch=Math.max(-.25,Math.min(.8,cameraPitch));
+
+        cameraTouchX=e.clientX;
+        cameraTouchY=e.clientY;
+    });
+
+    renderer.domElement.addEventListener("pointerup",()=>{
+        cameraTouch=false;
+    });
+
+
+    document.getElementById("jump").addEventListener(
+        "pointerdown",
+        jump
+    );
+
+    document.getElementById("ride").addEventListener(
+        "pointerdown",
+        toggleRide
+    );
+}
+
+
+/* =========================================================
+   JUMP
+========================================================= */
+
+function jump(){
+
+    if(player.position.y<=.1){
+
+        verticalVelocity=14;
+    }
+
+    if(riding){
+
+        verticalVelocity=18;
+    }
+}
+
+
+/* =========================================================
+   RIDE DOLPHIN
+========================================================= */
+
+function toggleRide(){
+
+    if(!riding){
+
+        const distance=player.position.distanceTo(
+            dolphin.position
+        );
+
+        if(distance<100){
+
+            riding=true;
+
+            status.style.display="block";
+
+            message.textContent=
+                "🐬 You're riding! Swipe to look around.";
+        }
+
+    }else{
+
+        riding=false;
+
+        verticalVelocity=7;
+
+        status.style.display="none";
+
+        message.textContent=
+            "Explore the Aero World and find more islands!";
+    }
+}
+
+
+/* =========================================================
+   UPDATE PLAYER
+========================================================= */
+
+function updatePlayer(dt){
+
+    let forward=-joystickY;
+    let sideways=joystickX;
+
+    const speed=riding?150:65;
+
+    const direction=new THREE.Vector3(
+        Math.sin(cameraYaw),
+        0,
+        Math.cos(cameraYaw)
+    );
+
+    const right=new THREE.Vector3(
+        Math.cos(cameraYaw),
+        0,
+        -Math.sin(cameraYaw)
+    );
+
+    const movement=new THREE.Vector3();
+
+    movement.addScaledVector(direction,forward);
+    movement.addScaledVector(right,sideways);
+
+    if(movement.lengthSq()>0){
+
+        movement.normalize();
+
+        velocity.lerp(
+            movement.multiplyScalar(speed),
+            .12
+        );
+
+        player.rotation.y=
+            Math.atan2(
+                velocity.x,
+                velocity.z
+            );
+
+    }else{
+
+        velocity.multiplyScalar(.88);
+    }
+
+    player.position.x+=velocity.x*dt;
+    player.position.z+=velocity.z*dt;
+
+    /* gravity */
+
+    player.position.y+=verticalVelocity*dt;
+
+    verticalVelocity-=35*dt;
+
+    if(player.position.y<0){
+
+        player.position.y=0;
+        verticalVelocity=0;
+    }
+
+    /* walking animation */
+
+    const moving=velocity.length()>5;
+
+    if(moving){
+
+        const t=performance.now()*.012;
+
+        player.userData.leftArm.rotation.x=
+            Math.sin(t)*.5;
+
+        player.userData.rightArm.rotation.x=
+            -Math.sin(t)*.5;
+
+        player.userData.leftLeg.rotation.x=
+            -Math.sin(t)*.65;
+
+        player.userData.rightLeg.rotation.x=
+            Math.sin(t)*.65;
+
+    }else{
+
+        player.userData.leftArm.rotation.x*=.8;
+        player.userData.rightArm.rotation.x*=.8;
+
+        player.userData.leftLeg.rotation.x*=.8;
+        player.userData.rightLeg.rotation.x*=.8;
+    }
+
+    /* riding */
+
+    if(riding){
+
+        dolphin.position.copy(player.position);
+
+        dolphin.position.y+=12;
+
+        dolphin.rotation.y=
+            player.rotation.y;
+
+        player.position.y=
+            dolphin.position.y+23;
+
+        player.rotation.y=
+            dolphin.rotation.y;
+    }
+}
+
+
+/* =========================================================
+   DOLPHIN AI
+========================================================= */
+
+function updateDolphin(){
+
+    if(riding){
+
+        dolphin.rotation.z=
+            Math.sin(performance.now()*.005)*.08;
+
+        return;
+    }
+
+    const t=performance.now()*.0005;
+
+    dolphin.position.x=
+        100+Math.sin(t)*100;
+
+    dolphin.position.z=
+        -180+Math.cos(t*.8)*100;
+
+    dolphin.position.y=
+        15+Math.sin(t*3)*7;
+
+    dolphin.rotation.y=
+        Math.atan2(
+            Math.cos(t),
+            -Math.sin(t)
+        );
+
+    dolphin.rotation.z=
+        Math.sin(t*3)*.08;
+}
+
+
+/* =========================================================
+   COLLECTIBLES
+========================================================= */
+
+function updateCollectibles(){
+
+    for(const crystal of collectibles){
+
+        crystal.rotation.y+=.025;
+        crystal.rotation.x+=.012;
+
+        crystal.position.y+=
+            Math.sin(
+                performance.now()*.002+
+                crystal.position.x
+            )*.008;
+
+        if(
+            crystal.position.distanceTo(
+                player.position
+            )<28
+        ){
+
+            crystal.position.set(
+                THREE.MathUtils.randFloatSpread(1500),
+                THREE.MathUtils.randFloat(8,35),
+                THREE.MathUtils.randFloatSpread(1400)
+            );
+
+            score++;
+
+            scoreText.textContent=score;
+        }
+    }
+}
+
+
+/* =========================================================
+   CAMERA
+========================================================= */
+
+function updateCamera(){
+
+    const distance=riding?115:135;
+
+    const target=new THREE.Vector3();
+
+    target.copy(player.position);
+
+    target.y+=riding?25:38;
+
+    const offset=new THREE.Vector3(
+        Math.sin(cameraYaw)*distance,
+        45+cameraPitch*80,
+        Math.cos(cameraYaw)*distance
+    );
+
+    const desired=new THREE.Vector3();
+
+    desired.copy(target).add(offset);
+
+    camera.position.lerp(
+        desired,
+        .08
+    );
+
+    camera.lookAt(target);
+}
+
+
+/* =========================================================
+   ANIMATION
+========================================================= */
+
+function animate(){
+
+    requestAnimationFrame(animate);
+
+    const dt=Math.min(
+        clock.getDelta(),
+        .033
+    );
+
+    updatePlayer(dt);
+    updateDolphin();
+    updateCollectibles();
+    updateCamera();
+
+    const currentSpeed=
+        Math.round(velocity.length());
+
+    speedText.textContent=currentSpeed;
+
+    if(!riding){
+
+        const distance=
+            player.position.distanceTo(
+                dolphin.position
+            );
+
+        if(distance<100){
+
+            message.textContent=
+                "🐬 Press RIDE to ride the dolphin!";
+        }
+    }
+
+    renderer.render(
+        scene,
+        camera
+    );
+}
+
+
+/* =========================================================
+   RESIZE
+========================================================= */
+
+function resize(){
+
+    camera.aspect=
+        innerWidth/innerHeight;
+
+    camera.updateProjectionMatrix();
+
+    renderer.setSize(
+        innerWidth,
+        innerHeight
+    );
+
+    renderer.setPixelRatio(
+        Math.min(devicePixelRatio,2)
+    );
+}
+
+
+/* =========================================================
+   KEYBOARD SUPPORT
+========================================================= */
 
 const keys={};
 
 addEventListener("keydown",e=>{
- keys[e.key.toLowerCase()]=true;
 
- if(e.key===" "){
-  jump();
- }
+    keys[e.key.toLowerCase()]=true;
 
- if(e.key.toLowerCase()==="e"){
-  toggleRide();
- }
+    if(e.key===" "){
+        jump();
+    }
+
+    if(e.key.toLowerCase()==="e"){
+        toggleRide();
+    }
 });
 
 addEventListener("keyup",e=>{
- keys[e.key.toLowerCase()]=false;
+    keys[e.key.toLowerCase()]=false;
 });
 
 
-/* movement */
-
-function jump(){
-
- if(player.riding){
-  player.vy=15;
-  player.jump=true;
-  return;
- }
-
- if(player.y<=1){
-  player.vy=12;
-  player.jump=true;
- }
-}
-
-document.getElementById("jump").addEventListener("pointerdown",jump);
-
-function nearDolphin(){
-
- let dx=player.x-dolphin.x;
- let dz=player.z-dolphin.z;
-
- return Math.hypot(dx,dz)<100;
-}
-
-function toggleRide(){
-
- if(!player.riding && nearDolphin()){
-  player.riding=true;
-  mountUI.style.display="block";
-  message.textContent="🐬 You're riding the dolphin! Use the joystick to swim.";
- }
-
- else if(player.riding){
-  player.riding=false;
-  player.vy=5;
-  mountUI.style.display="none";
-  message.textContent="The dolphin is ready whenever you are 🐬";
- }
-}
-
-document.getElementById("ride").addEventListener("pointerdown",toggleRide);
-
-
-/* projection */
-
-function project(x,y,z){
-
- const dx=x-player.x;
- const dz=z-player.z;
-
- const depth=dz+700;
-
- if(depth<20)return null;
-
- const scale=650/depth;
-
- return {
-  x:W/2+dx*scale,
-  y:H*.48-y*scale,
-  s:scale
- };
-}
-
-
-/* sky */
-
-function drawSky(){
-
- let g=ctx.createLinearGradient(0,0,0,H);
- g.addColorStop(0,"#4bcfff");
- g.addColorStop(.48,"#baf6ff");
- g.addColorStop(1,"#eaffff");
-
- ctx.fillStyle=g;
- ctx.fillRect(0,0,W,H);
-
- /* sun */
-
- const sun=ctx.createRadialGradient(
-  W*.78,H*.15,10,
-  W*.78,H*.15,180
- );
-
- sun.addColorStop(0,"rgba(255,255,255,.95)");
- sun.addColorStop(1,"rgba(255,255,255,0)");
-
- ctx.fillStyle=sun;
- ctx.fillRect(0,0,W,H);
-}
-
-
-/* clouds */
-
-function drawClouds(){
-
- for(const c of clouds){
-
-  const p=project(c.x,c.y,c.z);
-
-  if(!p)continue;
-  if(p.x<-300||p.x>W+300)continue;
-
-  ctx.save();
-
-  ctx.globalAlpha=.65;
-  ctx.fillStyle="white";
-
-  let s=70*p.s*p.s;
-
-  ctx.beginPath();
-
-  ctx.arc(p.x,p.y,s*.45,0,Math.PI*2);
-  ctx.arc(p.x+s*.45,p.y+5,s*.55,0,Math.PI*2);
-  ctx.arc(p.x+s*.9,p.y+12,s*.38,0,Math.PI*2);
-
-  ctx.fill();
-
-  ctx.restore();
- }
-}
-
-
-/* ocean */
-
-function drawOcean(){
-
- let horizon=H*.48;
-
- ctx.fillStyle="#16bce8";
- ctx.fillRect(0,horizon,W,H-horizon);
-
- for(let i=0;i<35;i++){
-
-  let y=horizon+i*i*.75;
-
-  ctx.strokeStyle=`rgba(255,255,255,${.08+i/500})`;
-  ctx.lineWidth=2;
-
-  ctx.beginPath();
-
-  for(let x=0;x<W;x+=30){
-
-   let wave=Math.sin(x*.025+i+time*.02)*3;
-
-   if(x===0)ctx.moveTo(x,y+wave);
-   else ctx.lineTo(x,y+wave);
-  }
-
-  ctx.stroke();
- }
-}
-
-
-/* islands */
-
-function drawIslands(){
-
- for(const island of islands){
-
-  const p=project(island.x,0,island.z);
-
-  if(!p)continue;
-
-  let r=island.r*p.s;
-
-  if(r<2)continue;
-
-  ctx.save();
-
-  /* shadow */
-
-  ctx.fillStyle="rgba(0,70,100,.25)";
-  ctx.beginPath();
-  ctx.ellipse(p.x+5,p.y+12,r*1.1,r*.35,0,0,Math.PI*2);
-  ctx.fill();
-
-  /* sand */
-
-  ctx.fillStyle="#f4e59d";
-  ctx.beginPath();
-  ctx.ellipse(p.x,p.y,r,r*.48,0,0,Math.PI*2);
-  ctx.fill();
-
-  /* grass */
-
-  ctx.fillStyle="#54c96b";
-  ctx.beginPath();
-  ctx.ellipse(p.x,p.y-8,r*.82,r*.36,0,0,Math.PI*2);
-  ctx.fill();
-
-  /* futuristic dome */
-
-  if(r>35){
-
-   ctx.fillStyle="rgba(130,240,255,.7)";
-   ctx.strokeStyle="rgba(255,255,255,.8)";
-   ctx.lineWidth=2;
-
-   ctx.beginPath();
-   ctx.ellipse(p.x,p.y-r*.15,r*.25,r*.16,0,Math.PI,Math.PI*2);
-   ctx.fill();
-   ctx.stroke();
-
-   ctx.fillStyle="#d9ffff";
-   ctx.beginPath();
-   ctx.ellipse(p.x,p.y-r*.17,r*.06,r*.04,0,0,Math.PI*2);
-   ctx.fill();
-  }
-
-  ctx.restore();
- }
-}
-
-
-/* trees */
-
-function drawTrees(){
-
- for(const t of trees){
-
-  const p=project(t.x,0,t.z);
-
-  if(!p)continue;
-
-  let s=65*t.s*p.s;
-
-  if(s<3)continue;
-
-  ctx.save();
-
-  ctx.fillStyle="#986b38";
-  ctx.fillRect(p.x-s*.08,p.y-s*.5,s*.16,s*.55);
-
-  ctx.fillStyle="#36bd62";
-
-  ctx.beginPath();
-  ctx.arc(p.x,p.y-s*.65,s*.35,0,Math.PI*2);
-  ctx.arc(p.x-s*.25,p.y-s*.52,s*.3,0,Math.PI*2);
-  ctx.arc(p.x+s*.25,p.y-s*.52,s*.3,0,Math.PI*2);
-  ctx.fill();
-
-  ctx.restore();
- }
-}
-
-
-/* crystals */
-
-function drawCrystals(){
-
- for(const c of crystals){
-
-  const p=project(c.x,0,c.z);
-
-  if(!p)continue;
-
-  let s=25*p.s;
-
-  if(s<2)continue;
-
-  ctx.save();
-
-  ctx.translate(p.x,p.y);
-  ctx.rotate(c.rot+time*.001);
-
-  ctx.fillStyle="rgba(120,245,255,.75)";
-  ctx.strokeStyle="white";
-
-  ctx.beginPath();
-  ctx.moveTo(0,-s);
-  ctx.lineTo(s*.35,0);
-  ctx.lineTo(0,s*.5);
-  ctx.lineTo(-s*.35,0);
-  ctx.closePath();
-
-  ctx.fill();
-  ctx.stroke();
-
-  ctx.restore();
- }
-}
-
-
-/* bubbles */
-
-function drawBubbles(){
-
- for(const b of bubbles){
-
-  b.y+=b.speed;
-
-  if(b.y>500)b.y=0;
-
-  const p=project(b.x,b.y,b.z);
-
-  if(!p)continue;
-
-  let r=Math.max(2,b.s*p.s);
-
-  if(r<1)continue;
-
-  ctx.strokeStyle="rgba(255,255,255,.55)";
-  ctx.lineWidth=1.5;
-
-  ctx.beginPath();
-  ctx.arc(p.x,p.y,r,0,Math.PI*2);
-  ctx.stroke();
- }
-}
-
-
-/* fish */
-
-function drawFish(){
-
- for(const f of fish){
-
-  f.x+=f.dir*f.speed;
-
-  if(f.x>1800)f.x=-1800;
-  if(f.x<-1800)f.x=1800;
-
-  const p=project(f.x,f.y,f.z);
-
-  if(!p)continue;
-
-  let s=f.size*p.s;
-
-  if(s<2)continue;
-
-  ctx.save();
-
-  ctx.translate(p.x,p.y);
-
-  if(f.dir<0)ctx.scale(-1,1);
-
-  ctx.fillStyle="#ffb83d";
-
-  ctx.beginPath();
-  ctx.ellipse(0,0,s,s*.55,0,0,Math.PI*2);
-  ctx.fill();
-
-  ctx.beginPath();
-  ctx.moveTo(-s,0);
-  ctx.lineTo(-s*1.6,-s*.7);
-  ctx.lineTo(-s*1.6,s*.7);
-  ctx.closePath();
-  ctx.fill();
-
-  ctx.fillStyle="white";
-  ctx.beginPath();
-  ctx.arc(s*.45,-s*.15,s*.18,0,Math.PI*2);
-  ctx.fill();
-
-  ctx.fillStyle="#174f69";
-  ctx.beginPath();
-  ctx.arc(s*.48,-s*.15,s*.08,0,Math.PI*2);
-  ctx.fill();
-
-  ctx.restore();
- }
-}
-
-
-/* dolphin */
-
-function drawDolphin(){
-
- let bob=Math.sin(time*.004)*15;
-
- let x=player.riding?player.x:dolphin.x;
- let z=player.riding?player.z:dolphin.z;
-
- if(!player.riding){
-  dolphin.phase+=.04;
-  x=dolphin.x+Math.sin(dolphin.phase)*30;
-  z=dolphin.z+Math.cos(dolphin.phase*.7)*25;
- }
-
- let p=project(x,45+bob,z);
-
- if(!p)return;
-
- let s=90*p.s;
-
- if(s<3)return;
-
- ctx.save();
- ctx.translate(p.x,p.y);
-
- ctx.fillStyle="#6ec9e5";
- ctx.strokeStyle="#dfffff";
- ctx.lineWidth=Math.max(1,s*.035);
-
- /* body */
-
- ctx.beginPath();
- ctx.ellipse(0,0,s,s*.36,0,0,Math.PI*2);
- ctx.fill();
- ctx.stroke();
-
- /* nose */
-
- ctx.beginPath();
- ctx.moveTo(s*.75,-s*.05);
- ctx.quadraticCurveTo(s*1.35,-s*.08,s*1.55,0);
- ctx.quadraticCurveTo(s*1.25,s*.1,s*.75,s*.1);
- ctx.fill();
- ctx.stroke();
-
- /* dorsal fin */
-
- ctx.beginPath();
- ctx.moveTo(-s*.05,-s*.25);
- ctx.lineTo(s*.18,-s*.75);
- ctx.lineTo(s*.35,-s*.25);
- ctx.fill();
-
- /* tail */
-
- ctx.beginPath();
- ctx.moveTo(-s*.75,0);
- ctx.lineTo(-s*1.25,-s*.45);
- ctx.lineTo(-s*1.05,0);
- ctx.lineTo(-s*1.25,s*.45);
- ctx.closePath();
- ctx.fill();
-
- /* eye */
-
- ctx.fillStyle="#123d58";
- ctx.beginPath();
- ctx.arc(s*.58,-s*.14,s*.07,0,Math.PI*2);
- ctx.fill();
-
- /* highlight */
-
- ctx.fillStyle="rgba(255,255,255,.45)";
- ctx.beginPath();
- ctx.ellipse(-s*.15,-s*.13,s*.42,s*.08,0,0,Math.PI*2);
- ctx.fill();
-
- /* rider */
-
- if(player.riding){
-
-  ctx.fillStyle="#ffffff";
-
-  ctx.beginPath();
-  ctx.arc(-s*.05,-s*.6,s*.12,0,Math.PI*2);
-  ctx.fill();
-
-  ctx.strokeStyle="#ffffff";
-  ctx.lineWidth=s*.08;
-
-  ctx.beginPath();
-  ctx.moveTo(-s*.05,-s*.48);
-  ctx.lineTo(-s*.05,-s*.15);
-  ctx.stroke();
- }
-
- ctx.restore();
-}
-
-
-/* update */
-
-function update(){
-
- time++;
-
- let forward=0;
- let strafe=0;
-
- if(Math.abs(joyY)>.05)forward=-joyY;
- if(Math.abs(joyX)>.05)strafe=joyX;
-
- if(keys["w"]||keys["arrowup"])forward=1;
- if(keys["s"]||keys["arrowdown"])forward=-1;
- if(keys["a"]||keys["arrowleft"])strafe=-1;
- if(keys["d"]||keys["arrowright"])strafe=1;
-
- let maxSpeed=player.riding?8:4;
-
- player.vx+=(strafe*maxSpeed-player.vx)*.12;
- player.vz+=(forward*maxSpeed-player.vz)*.12;
-
- player.x+=player.vx;
- player.z+=player.vz;
-
- if(player.riding){
-
-  dolphin.x=player.x;
-  dolphin.z=player.z;
-  dolphin.y=player.y;
-
-  player.y+=player.vy;
-
-  player.vy-=.55;
-
-  if(player.y<20){
-   player.y=20;
-   player.vy=0;
-  }
-
- }else{
-
-  player.y+=player.vy;
-
-  player.vy-=.6;
-
-  if(player.y<0){
-   player.y=0;
-   player.vy=0;
-  }
- }
-
- /* collect crystals */
-
- for(const c of crystals){
-
-  let dx=player.x-c.x;
-  let dz=player.z-c.z;
-
-  if(Math.hypot(dx,dz)<35){
-
-   c.x=rand(-1600,1600);
-   c.z=rand(-1700,900);
-
-   score++;
-   scoreEl.textContent=score;
-  }
- }
-
- /* dolphin proximity */
-
- if(!player.riding){
-
-  if(nearDolphin()){
-
-   message.textContent="🐬 Press RIDE or E to ride the dolphin!";
-
-  }else{
-
-   message.textContent="Explore the ocean • Find the dolphin 🐬";
-  }
- }
-
- let sp=Math.round(Math.hypot(player.vx,player.vz)*10);
- speedEl.textContent=sp;
-}
-
-
-/* render */
-
-function render(){
-
- drawSky();
- drawClouds();
- drawOcean();
-
- /*
- Objects are intentionally drawn in a simple
- painter's order to keep the game lightweight
- and mobile-friendly.
- */
-
- drawIslands();
- drawTrees();
- drawCrystals();
- drawFish();
- drawBubbles();
- drawDolphin();
-
- /* water shine */
-
- ctx.fillStyle="rgba(255,255,255,.08)";
-
- for(let i=0;i<20;i++){
-
-  let x=(i*137+time*.35)%W;
-  let y=H*.52+(i*47)%((H*.48));
-
-  ctx.fillRect(x,y,80,2);
- }
-}
-
-
-/* game loop */
-
-function loop(){
-
- update();
- render();
-
- requestAnimationFrame(loop);
-}
-
-loop();
-
-
-/* autosave */
+/* keyboard movement */
 
 setInterval(()=>{
 
- localStorage.setItem("aeroWorldSave",JSON.stringify({
-  x:player.x,
-  z:player.z,
-  score
- }));
+    let x=0;
+    let y=0;
 
-},2000);
+    if(keys["w"]||keys["arrowup"])y=-1;
+    if(keys["s"]||keys["arrowdown"])y=1;
+    if(keys["a"]||keys["arrowleft"])x=-1;
+    if(keys["d"]||keys["arrowright"])x=1;
 
+    if(x||y){
 
-/* load */
+        joystickX=x;
+        joystickY=y;
 
-try{
+    }else if(
+        !document.getElementById("joystick").matches(":active")
+    ){
 
- const save=JSON.parse(localStorage.getItem("aeroWorldSave"));
+        /* don't override touch joystick */
+    }
 
- if(save){
-
-  player.x=save.x||0;
-  player.z=save.z||0;
-  score=save.score||0;
-
-  scoreEl.textContent=score;
- }
-}catch(e){}
-
-
-/* prevent page scrolling */
-
-document.addEventListener("touchmove",e=>{
- e.preventDefault();
-},{passive:false});
+},16);
 
 </script>
-
 </body>
 </html>
