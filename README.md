@@ -2,12 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-
-<meta name="viewport"
-      content="width=device-width,
-      initial-scale=1,
-      maximum-scale=1,
-      user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 
 <title>Frutiger Aero World</title>
 
@@ -22,8 +17,8 @@ html,body{
     width:100%;
     height:100%;
     overflow:hidden;
-    background:#62dfff;
     touch-action:none;
+    background:#69dfff;
     font-family:Arial,sans-serif;
 }
 
@@ -41,46 +36,42 @@ canvas{
 
 button{
     border:0;
-    outline:0;
     color:white;
     font-weight:800;
-    font-size:12px;
     pointer-events:auto;
     touch-action:none;
     user-select:none;
     -webkit-user-select:none;
     box-shadow:
-        0 7px 20px rgba(0,40,80,.25),
-        inset 0 2px 5px rgba(255,255,255,.55),
-        inset 0 -5px 10px rgba(0,80,120,.15);
+        0 7px 20px rgba(0,50,90,.25),
+        inset 0 2px 5px rgba(255,255,255,.55);
     backdrop-filter:blur(8px);
 }
 
 #title{
     position:absolute;
-    top:15px;
+    top:14px;
     left:50%;
     transform:translateX(-50%);
     color:white;
     font-size:17px;
-    letter-spacing:.5px;
-    text-shadow:
-        0 2px 4px rgba(0,70,110,.8),
-        0 0 15px rgba(255,255,255,.8);
     white-space:nowrap;
+    text-shadow:
+        0 2px 5px #15799c,
+        0 0 15px rgba(255,255,255,.8);
 }
 
 #shift{
     position:absolute;
-    top:13px;
-    right:13px;
+    top:12px;
+    right:12px;
     padding:12px 15px;
     border-radius:16px;
-    background:rgba(8,110,175,.72);
+    background:rgba(7,112,180,.75);
 }
 
 #shift.active{
-    background:rgba(0,190,120,.88);
+    background:rgba(0,190,115,.9);
 }
 
 #run{
@@ -90,11 +81,11 @@ button{
     width:74px;
     height:74px;
     border-radius:50%;
-    background:rgba(20,135,210,.84);
+    background:rgba(15,135,215,.86);
 }
 
 #run.active{
-    background:rgba(0,190,115,.95);
+    background:#00bd76;
     transform:scale(1.07);
 }
 
@@ -105,7 +96,7 @@ button{
     width:74px;
     height:74px;
     border-radius:50%;
-    background:rgba(0,170,120,.84);
+    background:rgba(0,174,120,.88);
 }
 
 #ride{
@@ -115,7 +106,7 @@ button{
     width:65px;
     height:65px;
     border-radius:50%;
-    background:rgba(0,130,205,.85);
+    background:rgba(0,130,205,.88);
 }
 
 #joystick{
@@ -125,16 +116,11 @@ button{
     width:130px;
     height:130px;
     border-radius:50%;
-    background:
-        radial-gradient(
-            circle,
-            rgba(255,255,255,.28),
-            rgba(255,255,255,.10)
-        );
-    border:2px solid rgba(255,255,255,.5);
+    background:rgba(255,255,255,.18);
+    border:2px solid rgba(255,255,255,.48);
     box-shadow:
-        inset 0 0 25px rgba(255,255,255,.2),
-        0 8px 25px rgba(0,70,100,.2);
+        inset 0 0 25px rgba(255,255,255,.25),
+        0 8px 25px rgba(0,60,100,.2);
     pointer-events:auto;
 }
 
@@ -144,18 +130,17 @@ button{
     height:58px;
     left:50%;
     top:50%;
-    margin-left:-29px;
-    margin-top:-29px;
+    margin:-29px;
     border-radius:50%;
     background:
         radial-gradient(
-            circle at 35% 25%,
-            #ffffff,
-            #dffaff 35%,
-            #a9e7f5
+            circle at 30% 25%,
+            white,
+            #dcfaff 35%,
+            #9de4f5
         );
     box-shadow:
-        0 6px 15px rgba(0,60,100,.22),
+        0 6px 16px rgba(0,50,90,.2),
         inset 0 2px 4px white;
 }
 </style>
@@ -165,9 +150,7 @@ button{
 
 <div id="ui">
 
-<div id="title">
-FRUTIGER AERO WORLD
-</div>
+<div id="title">FRUTIGER AERO WORLD</div>
 
 <button id="shift">SHIFT LOCK</button>
 <button id="run">RUN</button>
@@ -184,38 +167,38 @@ FRUTIGER AERO WORLD
 
 <script>
 
-/* ============================================================
+/* =========================================================
    SCENE
-============================================================ */
+========================================================= */
 
 const scene = new THREE.Scene();
 
 scene.background =
-    new THREE.Color(0x71dcff);
+    new THREE.Color(0x62d9fa);
 
 scene.fog =
     new THREE.FogExp2(
-        0x8be5f5,
-        0.0019
+        0x8be6f5,
+        .00165
     );
 
 
-/* ============================================================
+/* =========================================================
    CAMERA
-============================================================ */
+========================================================= */
 
 const camera =
     new THREE.PerspectiveCamera(
         65,
-        innerWidth / innerHeight,
-        0.1,
-        800
+        innerWidth/innerHeight,
+        .1,
+        900
     );
 
 
-/* ============================================================
+/* =========================================================
    RENDERER
-============================================================ */
+========================================================= */
 
 const renderer =
     new THREE.WebGLRenderer({
@@ -230,7 +213,7 @@ renderer.setSize(
 
 renderer.setPixelRatio(
     Math.min(
-        window.devicePixelRatio || 1,
+        devicePixelRatio || 1,
         1.35
     )
 );
@@ -242,163 +225,321 @@ renderer.toneMapping =
     THREE.ACESFilmicToneMapping;
 
 renderer.toneMappingExposure =
-    1.18;
+    1.2;
 
-renderer.shadowMap.enabled = true;
+renderer.shadowMap.enabled=true;
 
 renderer.shadowMap.type =
     THREE.PCFSoftShadowMap;
 
-document.body.appendChild(
-    renderer.domElement
-);
+document.body.appendChild(renderer.domElement);
 
 
-/* ============================================================
-   LIGHTING
-============================================================ */
+/* =========================================================
+   LIGHT
+========================================================= */
 
-const hemi =
+const skyLight =
     new THREE.HemisphereLight(
-        0xe9fcff,
-        0x245b3c,
-        2.8
+        0xe9fdff,
+        0x285b39,
+        3
     );
 
-scene.add(hemi);
+scene.add(skyLight);
 
 
 const sun =
     new THREE.DirectionalLight(
-        0xfff5dc,
-        4.2
+        0xfff5d6,
+        4.5
     );
 
 sun.position.set(
-    -100,
-    170,
+    -120,
+    180,
     80
 );
 
-sun.castShadow = true;
+sun.castShadow=true;
 
-sun.shadow.mapSize.width = 1536;
-sun.shadow.mapSize.height = 1536;
+sun.shadow.mapSize.width=1536;
+sun.shadow.mapSize.height=1536;
 
-sun.shadow.camera.left = -230;
-sun.shadow.camera.right = 230;
-sun.shadow.camera.top = 230;
-sun.shadow.camera.bottom = -230;
+sun.shadow.camera.left=-240;
+sun.shadow.camera.right=240;
+sun.shadow.camera.top=240;
+sun.shadow.camera.bottom=-240;
 
-sun.shadow.camera.near = 1;
-sun.shadow.camera.far = 500;
+sun.shadow.camera.near=1;
+sun.shadow.camera.far=520;
 
-sun.shadow.bias = -0.00025;
+sun.shadow.bias=-.00025;
 
 scene.add(sun);
 
 
-/* ============================================================
-   SUN GLOW
-============================================================ */
+/* =========================================================
+   SKY GRADIENT DOME
+========================================================= */
 
-const sunGlow =
+const skyCanvas =
+    document.createElement("canvas");
+
+skyCanvas.width=512;
+skyCanvas.height=512;
+
+const skyCtx =
+    skyCanvas.getContext("2d");
+
+const skyGradient =
+    skyCtx.createLinearGradient(
+        0,
+        0,
+        0,
+        512
+    );
+
+skyGradient.addColorStop(
+    0,
+    "#238fe2"
+);
+
+skyGradient.addColorStop(
+    .32,
+    "#55c8f3"
+);
+
+skyGradient.addColorStop(
+    .68,
+    "#9be9fa"
+);
+
+skyGradient.addColorStop(
+    1,
+    "#d8f8ff"
+);
+
+skyCtx.fillStyle=skyGradient;
+skyCtx.fillRect(
+    0,
+    0,
+    512,
+    512
+);
+
+const skyTexture =
+    new THREE.CanvasTexture(
+        skyCanvas
+    );
+
+skyTexture.colorSpace=
+    THREE.SRGBColorSpace;
+
+const sky =
     new THREE.Mesh(
 
         new THREE.SphereGeometry(
-            13,
-            24,
-            16
+            480,
+            48,
+            32
         ),
 
         new THREE.MeshBasicMaterial({
-            color:0xfff6bc,
-            transparent:true,
-            opacity:.35
+            map:skyTexture,
+            side:THREE.BackSide
         })
     );
 
-sunGlow.position.set(
+scene.add(sky);
+
+
+/* =========================================================
+   CLOUD SYSTEM
+========================================================= */
+
+const clouds=[];
+
+function createCloud(
+    x,
+    y,
+    z,
+    scale
+){
+
+    const group =
+        new THREE.Group();
+
+    const material =
+        new THREE.MeshPhysicalMaterial({
+            color:0xffffff,
+            roughness:.9,
+            metalness:0,
+            transparent:true,
+            opacity:.9
+        });
+
+    const pieces=[
+        [-2,0,0,1.0],
+        [-.7,.35,.1,1.25],
+        [.8,.45,0,1.45],
+        [2,.05,0,1.0],
+        [.1,.7,-.1,.95]
+    ];
+
+    for(
+        const p of pieces
+    ){
+
+        const puff =
+            new THREE.Mesh(
+
+                new THREE.SphereGeometry(
+                    3,
+                    20,
+                    14
+                ),
+
+                material
+            );
+
+        puff.position.set(
+            p[0],
+            p[1],
+            p[2]
+        );
+
+        puff.scale.set(
+            p[3]*1.35,
+            p[3]*.62,
+            p[3]
+        );
+
+        group.add(puff);
+    }
+
+    group.position.set(
+        x,
+        y,
+        z
+    );
+
+    group.scale.setScalar(
+        scale
+    );
+
+    scene.add(group);
+
+    clouds.push({
+        object:group,
+        speed:.7+
+            Math.random()*1.1,
+        baseY:y,
+        phase:Math.random()*10
+    });
+}
+
+
+/* distant clouds */
+
+createCloud(
     -120,
-    130,
-    -180
+    95,
+    -170,
+    2.8
 );
 
-scene.add(sunGlow);
+createCloud(
+    30,
+    120,
+    -230,
+    3.4
+);
+
+createCloud(
+    150,
+    92,
+    -120,
+    2.5
+);
+
+createCloud(
+    -180,
+    110,
+    -20,
+    3.1
+);
+
+createCloud(
+    180,
+    125,
+    80,
+    3.2
+);
+
+createCloud(
+    -40,
+    105,
+    180,
+    2.6
+);
+
+createCloud(
+    90,
+    100,
+    210,
+    2.9
+);
+
+createCloud(
+    -200,
+    135,
+    160,
+    3.5
+);
 
 
-/* ============================================================
+/* =========================================================
    WATER
-============================================================ */
+========================================================= */
 
-const waterGeometry =
+const waterGeo =
     new THREE.PlaneGeometry(
         800,
         800,
-        80,
-        80
+        70,
+        70
     );
 
-const waterPosition =
-    waterGeometry.attributes.position;
-
-for(let i=0;i<waterPosition.count;i++){
-
-    const x =
-        waterPosition.getX(i);
-
-    const z =
-        waterPosition.getY(i);
-
-    waterPosition.setZ(
-        i,
-        Math.sin(x*.035)*
-        .18 +
-        Math.cos(z*.041)*
-        .15
-    );
-}
-
-waterGeometry.computeVertexNormals();
+const waterMat =
+    new THREE.MeshPhysicalMaterial({
+        color:0x19bddd,
+        roughness:.1,
+        metalness:.08,
+        transmission:.08,
+        transparent:true,
+        opacity:.84,
+        clearcoat:1,
+        clearcoatRoughness:.06
+    });
 
 const water =
     new THREE.Mesh(
-
-        waterGeometry,
-
-        new THREE.MeshPhysicalMaterial({
-
-            color:0x20bde0,
-
-            roughness:.12,
-
-            metalness:.08,
-
-            transmission:.08,
-
-            transparent:true,
-
-            opacity:.82,
-
-            clearcoat:1,
-
-            clearcoatRoughness:.08
-        })
+        waterGeo,
+        waterMat
     );
 
-water.rotation.x =
-    -Math.PI/2;
-
+water.rotation.x=-Math.PI/2;
 water.position.y=-4;
 
 scene.add(water);
 
 
-/* ============================================================
-   SOLID ISLAND BASE
-============================================================ */
+/* =========================================================
+   ISLAND
+========================================================= */
 
-const islandBase =
+const island =
     new THREE.Mesh(
 
         new THREE.BoxGeometry(
@@ -408,23 +549,19 @@ const islandBase =
         ),
 
         new THREE.MeshStandardMaterial({
-
-            color:0x3f9c48,
-
-            roughness:.98
+            color:0x419b48,
+            roughness:1
         })
     );
 
-islandBase.position.y=-1.7;
+island.position.y=-1.7;
 
-islandBase.receiveShadow=true;
+island.receiveShadow=true;
 
-scene.add(islandBase);
+scene.add(island);
 
 
-/* ============================================================
-   GRASS
-============================================================ */
+/* grass */
 
 const grass =
     new THREE.Mesh(
@@ -436,9 +573,7 @@ const grass =
         ),
 
         new THREE.MeshStandardMaterial({
-
-            color:0x35ad43,
-
+            color:0x36ad43,
             roughness:.96
         })
     );
@@ -450,9 +585,7 @@ grass.receiveShadow=true;
 scene.add(grass);
 
 
-/* ============================================================
-   BEACH
-============================================================ */
+/* beach */
 
 const beach =
     new THREE.Mesh(
@@ -465,10 +598,8 @@ const beach =
         ),
 
         new THREE.MeshStandardMaterial({
-
-            color:0xf0df9c,
-
-            roughness:.91
+            color:0xf1dfa0,
+            roughness:.9
         })
     );
 
@@ -479,9 +610,7 @@ beach.receiveShadow=true;
 scene.add(beach);
 
 
-/* ============================================================
-   INNER GRASSLAND
-============================================================ */
+/* inner grass */
 
 const innerGrass =
     new THREE.Mesh(
@@ -494,10 +623,8 @@ const innerGrass =
         ),
 
         new THREE.MeshStandardMaterial({
-
-            color:0x48c953,
-
-            roughness:.88
+            color:0x48c952,
+            roughness:.87
         })
     );
 
@@ -508,142 +635,77 @@ innerGrass.receiveShadow=true;
 scene.add(innerGrass);
 
 
-/* ============================================================
-   GRASS BLADES
-============================================================ */
+/* =========================================================
+   GRASS DETAIL
+========================================================= */
 
-const bladeGeo =
+const grassBladeGeo =
     new THREE.PlaneGeometry(
-        .13,
-        .75
+        .12,
+        .7
     );
 
-const bladeMat =
+const grassBladeMat =
     new THREE.MeshStandardMaterial({
-
-        color:0x299f3c,
-
+        color:0x239d39,
         side:THREE.DoubleSide,
-
-        roughness:.95
+        roughness:1
     });
 
-const blades =
+const grassBlades =
     new THREE.InstancedMesh(
-        bladeGeo,
-        bladeMat,
-        1800
+        grassBladeGeo,
+        grassBladeMat,
+        1700
     );
 
-const dummy =
+const temp =
     new THREE.Object3D();
 
-for(let i=0;i<1800;i++){
+for(let i=0;i<1700;i++){
 
-    const angle =
+    const a=
         Math.random()*Math.PI*2;
 
-    const radius =
-        35+
+    const r=
+        30+
         Math.random()*105;
 
-    const x =
-        Math.cos(angle)*radius;
-
-    const z =
-        Math.sin(angle)*radius;
-
-    dummy.position.set(
-        x,
+    temp.position.set(
+        Math.cos(a)*r,
         1,
-        z
+        Math.sin(a)*r
     );
 
-    dummy.rotation.y =
+    temp.rotation.y=
         Math.random()*Math.PI;
 
-    const scale =
-        .55+
-        Math.random()*.9;
+    const s=
+        .5+
+        Math.random()*.8;
 
-    dummy.scale.set(
-        scale,
-        scale,
-        scale
+    temp.scale.set(
+        s,
+        s,
+        s
     );
 
-    dummy.updateMatrix();
+    temp.updateMatrix();
 
-    blades.setMatrixAt(
+    grassBlades.setMatrixAt(
         i,
-        dummy.matrix
+        temp.matrix
     );
 }
 
-blades.instanceMatrix.needsUpdate=true;
+grassBlades.instanceMatrix.needsUpdate=true;
 
-scene.add(blades);
-
-
-/* ============================================================
-   ROCK MATERIALS
-============================================================ */
-
-const rockMat =
-    new THREE.MeshStandardMaterial({
-
-        color:0x9acbd0,
-
-        roughness:.78
-    });
+scene.add(grassBlades);
 
 
-for(let i=0;i<65;i++){
-
-    const angle =
-        Math.random()*Math.PI*2;
-
-    const radius =
-        110+
-        Math.random()*43;
-
-    const rock =
-        new THREE.Mesh(
-
-            new THREE.DodecahedronGeometry(
-                .6+
-                Math.random()*2.1,
-                1
-            ),
-
-            rockMat
-        );
-
-    rock.position.set(
-        Math.cos(angle)*radius,
-        .9,
-        Math.sin(angle)*radius
-    );
-
-    rock.scale.y =
-        .45+
-        Math.random()*.55;
-
-    rock.rotation.set(
-        Math.random(),
-        Math.random(),
-        Math.random()
-    );
-
-    rock.castShadow=true;
-
-    scene.add(rock);
-}
-
-
-/* ============================================================
+/* =========================================================
    TREES
-============================================================ */
+========================================================= */
 
 const trunkGeo =
     new THREE.CylinderGeometry(
@@ -655,12 +717,9 @@ const trunkGeo =
 
 const trunkMat =
     new THREE.MeshStandardMaterial({
-
-        color:0x76502f,
-
-        roughness:.9
+        color:0x704b2c,
+        roughness:.92
     });
-
 
 const leafGeo =
     new THREE.IcosahedronGeometry(
@@ -670,210 +729,132 @@ const leafGeo =
 
 const leafMat =
     new THREE.MeshPhysicalMaterial({
-
-        color:0x20a94d,
-
-        roughness:.68,
-
-        clearcoat:.18
+        color:0x20aa4c,
+        roughness:.65,
+        clearcoat:.2
     });
 
 
 for(let i=0;i<105;i++){
 
-    const angle =
+    const a=
         Math.random()*Math.PI*2;
 
-    const radius =
-        40+
-        Math.random()*86;
+    const r=
+        38+
+        Math.random()*87;
 
-    const tree =
+    const tree=
         new THREE.Group();
 
-
-    const trunk =
+    const trunk=
         new THREE.Mesh(
             trunkGeo,
             trunkMat
         );
 
     trunk.position.y=3;
-
     trunk.castShadow=true;
 
     tree.add(trunk);
 
 
-    const crown1 =
+    const crown=
         new THREE.Mesh(
             leafGeo,
             leafMat
         );
 
-    crown1.position.y=7;
-
-    crown1.scale.set(
+    crown.position.y=7;
+    crown.scale.set(
         1.05,
-        1.15,
+        1.18,
         1.05
     );
 
-    crown1.castShadow=true;
+    crown.castShadow=true;
 
-    tree.add(crown1);
-
-
-    const crown2 =
-        new THREE.Mesh(
-            leafGeo,
-            leafMat
-        );
-
-    crown2.position.set(
-        1.25,
-        7.5,
-        .25
-    );
-
-    crown2.scale.setScalar(.65);
-
-    crown2.castShadow=true;
-
-    tree.add(crown2);
+    tree.add(crown);
 
 
     tree.position.set(
-        Math.cos(angle)*radius,
+        Math.cos(a)*r,
         .8,
-        Math.sin(angle)*radius
+        Math.sin(a)*r
     );
 
-    tree.rotation.y =
+    tree.rotation.y=
         Math.random()*Math.PI;
 
     scene.add(tree);
 }
 
 
-/* ============================================================
-   SMALL FLOWERS
-============================================================ */
-
-const flowerStemGeo =
-    new THREE.CylinderGeometry(
-        .025,
-        .025,
-        .5,
-        5
-    );
-
-const flowerStemMat =
-    new THREE.MeshStandardMaterial({
-        color:0x228d35
-    });
-
-const flowerGeo =
-    new THREE.SphereGeometry(
-        .22,
-        10,
-        8
-    );
-
-const flowerMat =
-    new THREE.MeshStandardMaterial({
-        color:0xffd738,
-        roughness:.5
-    });
-
-
-for(let i=0;i<180;i++){
-
-    const angle =
-        Math.random()*Math.PI*2;
-
-    const radius =
-        25+
-        Math.random()*105;
-
-    const flower =
-        new THREE.Group();
-
-    const stem =
-        new THREE.Mesh(
-            flowerStemGeo,
-            flowerStemMat
-        );
-
-    stem.position.y=.5;
-
-    flower.add(stem);
-
-    const head =
-        new THREE.Mesh(
-            flowerGeo,
-            flowerMat
-        );
-
-    head.position.y=.85;
-
-    flower.add(head);
-
-    flower.position.set(
-        Math.cos(angle)*radius,
-        .8,
-        Math.sin(angle)*radius
-    );
-
-    flower.scale.setScalar(
-        .6+
-        Math.random()*.7
-    );
-
-    scene.add(flower);
-}
-
-
-/* ============================================================
+/* =========================================================
    CHARACTER MATERIAL
-============================================================ */
+========================================================= */
 
-function makeCharacterGeometry(
+function characterGeometry(
     geometry
 ){
 
-    const pos =
+    const pos=
         geometry.attributes.position;
 
     const colors=[];
 
-    const top =
+    const darkBlue=
         new THREE.Color(
-            0xe1fcff
+            0x0875d0
         );
 
-    const cyan =
+    const blue=
         new THREE.Color(
-            0x52e7ef
+            0x10bde5
         );
 
-    const blue =
+    const cyan=
         new THREE.Color(
-            0x159edc
+            0x79f3f2
         );
+
+    const highlight=
+        new THREE.Color(
+            0xd9ffff
+        );
+
+    let min=-Infinity;
+    let max=-Infinity;
 
     let minY=Infinity;
     let maxY=-Infinity;
 
-    for(let i=0;i<pos.count;i++){
+    for(
+        let i=0;
+        i<pos.count;
+        i++
+    ){
 
         const y=pos.getY(i);
 
-        minY=Math.min(minY,y);
-        maxY=Math.max(maxY,y);
+        minY=
+            Math.min(
+                minY,
+                y
+            );
+
+        maxY=
+            Math.max(
+                maxY,
+                y
+            );
     }
 
-    for(let i=0;i<pos.count;i++){
+    for(
+        let i=0;
+        i<pos.count;
+        i++
+    ){
 
         const y=pos.getY(i);
 
@@ -884,23 +865,31 @@ function makeCharacterGeometry(
                 .001
             );
 
-        const c =
+        const c=
             new THREE.Color();
 
-        if(t>.58){
+        if(t>.72){
 
             c.lerpColors(
                 cyan,
-                top,
-                (t-.58)/.42
+                highlight,
+                (t-.72)/.28
+            );
+
+        }else if(t>.35){
+
+            c.lerpColors(
+                blue,
+                cyan,
+                (t-.35)/.37
             );
 
         }else{
 
             c.lerpColors(
+                darkBlue,
                 blue,
-                cyan,
-                t/.58
+                t/.35
             );
         }
 
@@ -923,50 +912,49 @@ function makeCharacterGeometry(
 }
 
 
-const characterMaterial =
+const characterMat =
     new THREE.MeshPhysicalMaterial({
 
         vertexColors:true,
 
-        roughness:.12,
+        roughness:.09,
 
-        metalness:.02,
+        metalness:.015,
 
         clearcoat:1,
 
-        clearcoatRoughness:.07,
+        clearcoatRoughness:.045,
 
-        sheen:.18,
+        sheen:.2,
 
-        sheenRoughness:.18
+        sheenRoughness:.15
     });
 
 
-/* ============================================================
-   CHARACTER
-   SAME BASIC SILHOUETTE — NO FACE
-============================================================ */
+/* =========================================================
+   PLAYER
+========================================================= */
 
-const player =
+const player=
     new THREE.Group();
 
 scene.add(player);
 
 
-/* HEAD */
+/* head */
 
-const head =
+const head=
     new THREE.Mesh(
 
-        makeCharacterGeometry(
+        characterGeometry(
             new THREE.SphereGeometry(
                 1.12,
-                48,
-                32
+                56,
+                40
             )
         ),
 
-        characterMaterial
+        characterMat
     );
 
 head.position.y=4.42;
@@ -982,20 +970,20 @@ head.castShadow=true;
 player.add(head);
 
 
-/* BODY */
+/* body */
 
-const body =
+const body=
     new THREE.Mesh(
 
-        makeCharacterGeometry(
+        characterGeometry(
             new THREE.SphereGeometry(
                 1.3,
-                48,
-                32
+                56,
+                40
             )
         ),
 
-        characterMaterial
+        characterMat
     );
 
 body.position.y=2.56;
@@ -1011,22 +999,21 @@ body.castShadow=true;
 player.add(body);
 
 
-/* LEFT ARM */
+/* arms */
 
-const leftArm =
+const leftArm=
     new THREE.Mesh(
 
-        makeCharacterGeometry(
-
+        characterGeometry(
             new THREE.CapsuleGeometry(
                 .39,
                 1.72,
-                16,
-                24
+                18,
+                28
             )
         ),
 
-        characterMaterial
+        characterMat
     );
 
 leftArm.position.set(
@@ -1042,22 +1029,19 @@ leftArm.castShadow=true;
 player.add(leftArm);
 
 
-/* RIGHT ARM */
-
-const rightArm =
+const rightArm=
     new THREE.Mesh(
 
-        makeCharacterGeometry(
-
+        characterGeometry(
             new THREE.CapsuleGeometry(
                 .39,
                 1.72,
-                16,
-                24
+                18,
+                28
             )
         ),
 
-        characterMaterial
+        characterMat
     );
 
 rightArm.position.set(
@@ -1073,22 +1057,21 @@ rightArm.castShadow=true;
 player.add(rightArm);
 
 
-/* LEFT LEG */
+/* legs */
 
-const leftLeg =
+const leftLeg=
     new THREE.Mesh(
 
-        makeCharacterGeometry(
-
+        characterGeometry(
             new THREE.CapsuleGeometry(
                 .45,
                 1.58,
-                16,
-                24
+                18,
+                28
             )
         ),
 
-        characterMaterial
+        characterMat
     );
 
 leftLeg.position.set(
@@ -1108,22 +1091,19 @@ leftLeg.castShadow=true;
 player.add(leftLeg);
 
 
-/* RIGHT LEG */
-
-const rightLeg =
+const rightLeg=
     new THREE.Mesh(
 
-        makeCharacterGeometry(
-
+        characterGeometry(
             new THREE.CapsuleGeometry(
                 .45,
                 1.58,
-                16,
-                24
+                18,
+                28
             )
         ),
 
-        characterMaterial
+        characterMat
     );
 
 rightLeg.position.set(
@@ -1143,38 +1123,30 @@ rightLeg.castShadow=true;
 player.add(rightLeg);
 
 
-/* ============================================================
+/* =========================================================
    DOLPHIN
-============================================================ */
+========================================================= */
 
-const dolphin =
+const dolphin=
     new THREE.Group();
 
-const dolphinMaterial =
+const dolphinMat=
     new THREE.MeshPhysicalMaterial({
-
-        color:0x59c9e8,
-
-        roughness:.16,
-
-        metalness:.04,
-
+        color:0x58cae9,
+        roughness:.13,
+        metalness:.03,
         clearcoat:1,
-
-        clearcoatRoughness:.08
+        clearcoatRoughness:.06
     });
 
-
-const dolphinBody =
+const dolphinBody=
     new THREE.Mesh(
-
         new THREE.SphereGeometry(
             2,
             36,
             24
         ),
-
-        dolphinMaterial
+        dolphinMat
     );
 
 dolphinBody.scale.set(
@@ -1188,71 +1160,51 @@ dolphinBody.castShadow=true;
 dolphin.add(dolphinBody);
 
 
-const dolphinSnout =
+const snout=
     new THREE.Mesh(
-
         new THREE.CapsuleGeometry(
             .38,
             1.25,
-            10,
-            18
+            12,
+            20
         ),
-
-        dolphinMaterial
+        dolphinMat
     );
 
-dolphinSnout.rotation.z=
-    -Math.PI/2;
+snout.rotation.z=-Math.PI/2;
 
-dolphinSnout.position.x=3;
+snout.position.x=3;
 
-dolphin.add(dolphinSnout);
+dolphin.add(snout);
 
 
-/* FIN */
-
-const finGeo =
-    new THREE.ConeGeometry(
-        .7,
-        1.7,
-        4
-    );
-
-const topFin =
+const fin=
     new THREE.Mesh(
-        finGeo,
-        dolphinMaterial
+        new THREE.ConeGeometry(
+            .7,
+            1.7,
+            4
+        ),
+        dolphinMat
     );
 
-topFin.rotation.z=
-    Math.PI;
+fin.rotation.z=Math.PI;
+fin.position.y=1;
 
-topFin.position.set(
-    0,
-    1,
-    0
-);
-
-dolphin.add(topFin);
+dolphin.add(fin);
 
 
-/* TAIL */
-
-const tail =
+const tail=
     new THREE.Mesh(
-
         new THREE.ConeGeometry(
             1.1,
             1.7,
             5
         ),
-
-        dolphinMaterial
+        dolphinMat
     );
 
-tail.rotation.z=
-    Math.PI/2;
-
+tail.rotation.z=Math.PI/2;
 tail.position.x=-3;
 
 dolphin.add(tail);
@@ -1264,47 +1216,40 @@ dolphin.position.set(
     -20
 );
 
-dolphin.rotation.y=
-    Math.PI/2;
+dolphin.rotation.y=Math.PI/2;
 
 scene.add(dolphin);
 
 
-/* ============================================================
+/* =========================================================
    INPUT
-============================================================ */
+========================================================= */
 
 const keys={};
 
-window.addEventListener(
+addEventListener(
     "keydown",
     e=>{
-        keys[
-            e.key.toLowerCase()
-        ]=true;
+        keys[e.key.toLowerCase()]=true;
     }
 );
 
-window.addEventListener(
+addEventListener(
     "keyup",
     e=>{
-        keys[
-            e.key.toLowerCase()
-        ]=false;
+        keys[e.key.toLowerCase()]=false;
     }
 );
 
 
-/* ============================================================
+/* =========================================================
    RUN
-============================================================ */
+========================================================= */
 
 let running=false;
 
 const runButton=
-    document.getElementById(
-        "run"
-    );
+    document.getElementById("run");
 
 runButton.addEventListener(
     "pointerdown",
@@ -1316,12 +1261,8 @@ runButton.addEventListener(
 );
 
 function stopRun(){
-
     running=false;
-
-    runButton.classList.remove(
-        "active"
-    );
+    runButton.classList.remove("active");
 }
 
 runButton.addEventListener(
@@ -1335,9 +1276,9 @@ runButton.addEventListener(
 );
 
 
-/* ============================================================
+/* =========================================================
    JOYSTICK
-============================================================ */
+========================================================= */
 
 const joystick=
     document.getElementById(
@@ -1353,7 +1294,7 @@ let joyX=0;
 let joyY=0;
 let joyActive=false;
 
-function moveStick(e){
+function updateJoy(e){
 
     const r=
         joystick.getBoundingClientRect();
@@ -1389,30 +1330,25 @@ function moveStick(e){
 joystick.addEventListener(
     "pointerdown",
     e=>{
-
         joyActive=true;
-
         joystick.setPointerCapture(
             e.pointerId
         );
-
-        moveStick(e);
+        updateJoy(e);
     }
 );
 
 joystick.addEventListener(
     "pointermove",
     e=>{
-
         if(joyActive)
-            moveStick(e);
+            updateJoy(e);
     }
 );
 
-function releaseStick(){
+function releaseJoy(){
 
     joyActive=false;
-
     joyX=0;
     joyY=0;
 
@@ -1422,18 +1358,18 @@ function releaseStick(){
 
 joystick.addEventListener(
     "pointerup",
-    releaseStick
+    releaseJoy
 );
 
 joystick.addEventListener(
     "pointercancel",
-    releaseStick
+    releaseJoy
 );
 
 
-/* ============================================================
+/* =========================================================
    JUMP
-============================================================ */
+========================================================= */
 
 let jumping=false;
 let velocityY=0;
@@ -1443,12 +1379,7 @@ document.getElementById(
 ).addEventListener(
     "pointerdown",
     ()=>{
-
-        if(
-            !jumping &&
-            !riding
-        ){
-
+        if(!jumping && !riding){
             jumping=true;
             velocityY=9;
         }
@@ -1456,42 +1387,38 @@ document.getElementById(
 );
 
 
-/* ============================================================
+/* =========================================================
    SHIFT LOCK
-============================================================ */
+========================================================= */
 
 let shiftLock=false;
-
 let yaw=0;
 
-const shiftButton=
+const shift=
     document.getElementById(
         "shift"
     );
 
-shiftButton.addEventListener(
+shift.addEventListener(
     "pointerdown",
     ()=>{
 
         shiftLock=!shiftLock;
 
-        shiftButton.classList.toggle(
+        shift.classList.toggle(
             "active",
             shiftLock
         );
 
-        if(shiftLock){
-
-            yaw=
-                player.rotation.y;
-        }
+        if(shiftLock)
+            yaw=player.rotation.y;
     }
 );
 
 
-/* ============================================================
-   CAMERA DRAG
-============================================================ */
+/* =========================================================
+   CAMERA
+========================================================= */
 
 let dragging=false;
 let previousX=0;
@@ -1504,7 +1431,6 @@ renderer.domElement.addEventListener(
             return;
 
         dragging=true;
-
         previousX=e.clientX;
     }
 );
@@ -1520,17 +1446,15 @@ renderer.domElement.addEventListener(
             return;
 
         const dx=
-            e.clientX-
-            previousX;
+            e.clientX-previousX;
 
-        previousX=
-            e.clientX;
+        previousX=e.clientX;
 
         yaw-=dx*.007;
     }
 );
 
-window.addEventListener(
+addEventListener(
     "pointerup",
     ()=>{
         dragging=false;
@@ -1538,9 +1462,9 @@ window.addEventListener(
 );
 
 
-/* ============================================================
+/* =========================================================
    RIDE
-============================================================ */
+========================================================= */
 
 let riding=false;
 
@@ -1559,16 +1483,15 @@ document.getElementById(
 
             riding=!riding;
 
-            player.visible=
-                !riding;
+            player.visible=!riding;
         }
     }
 );
 
 
-/* ============================================================
+/* =========================================================
    ANIMATION
-============================================================ */
+========================================================= */
 
 const clock=
     new THREE.Clock();
@@ -1588,13 +1511,47 @@ function animate(){
         );
 
 
-    /* --------------------------------------------------------
-       INPUT
-    -------------------------------------------------------- */
+    /* -----------------------------------------------------
+       CLOUD MOVEMENT
+    ----------------------------------------------------- */
+
+    const now=
+        performance.now()*.001;
+
+    for(
+        const cloud of clouds
+    ){
+
+        cloud.object.position.x +=
+            cloud.speed*dt;
+
+        cloud.object.position.y=
+            cloud.baseY+
+            Math.sin(
+                now*.08+
+                cloud.phase
+            )*.45;
+
+        /*
+           Loop clouds around the world
+           so they never disappear.
+        */
+
+        if(
+            cloud.object.position.x>300
+        ){
+
+            cloud.object.position.x=-300;
+        }
+    }
+
+
+    /* -----------------------------------------------------
+       PLAYER INPUT
+    ----------------------------------------------------- */
 
     let inputX=0;
     let inputY=0;
-
 
     if(
         keys["a"] ||
@@ -1637,21 +1594,22 @@ function animate(){
             inputY*inputY
         );
 
-
     if(length>1){
 
         inputX/=length;
         inputY/=length;
     }
 
-
     const moving=
         length>.08;
 
 
-    /* --------------------------------------------------------
-       CAMERA DIRECTIONS
-    -------------------------------------------------------- */
+    /* -----------------------------------------------------
+       CAMERA RELATIVE MOVEMENT
+
+       UP = FORWARD
+       DOWN = BACKWARD
+    ----------------------------------------------------- */
 
     const forward=
         new THREE.Vector3(
@@ -1667,10 +1625,8 @@ function animate(){
             Math.sin(yaw)
         );
 
-
     const movement=
         new THREE.Vector3();
-
 
     movement.addScaledVector(
         right,
@@ -1689,22 +1645,18 @@ function animate(){
 
         movement.normalize();
 
-
         let speed=
             running
-            ? 15
-            : 8.5;
-
+            ?15
+            :8.5;
 
         if(riding)
             speed=14;
 
-
         const object=
             riding
-            ? dolphin
-            : player;
-
+            ?dolphin
+            :player;
 
         object.position.addScaledVector(
             movement,
@@ -1716,8 +1668,7 @@ function animate(){
 
             if(shiftLock){
 
-                player.rotation.y=
-                    yaw;
+                player.rotation.y=yaw;
 
             }else{
 
@@ -1731,9 +1682,9 @@ function animate(){
     }
 
 
-    /* --------------------------------------------------------
+    /* -----------------------------------------------------
        JUMP
-    -------------------------------------------------------- */
+    ----------------------------------------------------- */
 
     if(
         jumping &&
@@ -1750,9 +1701,7 @@ function animate(){
         ){
 
             player.position.y=.85;
-
             velocityY=0;
-
             jumping=false;
         }
 
@@ -1762,27 +1711,24 @@ function animate(){
     }
 
 
-    /* --------------------------------------------------------
-       WORLD BOUNDARY
-    -------------------------------------------------------- */
+    /* -----------------------------------------------------
+       BOUNDARY
+    ----------------------------------------------------- */
 
     function keepInside(object){
 
         const d=
             Math.sqrt(
-                object.position.x*
-                object.position.x+
-                object.position.z*
-                object.position.z
+                object.position.x**2+
+                object.position.z**2
             );
 
         if(d>174){
 
-            const s=
-                174/d;
+            const scale=174/d;
 
-            object.position.x*=s;
-            object.position.z*=s;
+            object.position.x*=scale;
+            object.position.z*=scale;
         }
     }
 
@@ -1790,31 +1736,25 @@ function animate(){
     keepInside(dolphin);
 
 
-    /* --------------------------------------------------------
-       CHARACTER ANIMATION
-    -------------------------------------------------------- */
+    /* -----------------------------------------------------
+       RUN / WALK ANIMATION
+    ----------------------------------------------------- */
 
     if(
         moving &&
         !riding
     ){
 
-        animTime +=
+        animTime+=
             dt*
-            (running ? 18 : 10);
-
+            (running?18:10);
 
         const swing=
             Math.sin(animTime)*
-            (running ? .76 : .43);
+            (running?.76:.43);
 
-
-        leftLeg.rotation.x=
-            swing;
-
-        rightLeg.rotation.x=
-            -swing;
-
+        leftLeg.rotation.x=swing;
+        rightLeg.rotation.x=-swing;
 
         leftArm.rotation.x=
             -swing*.82;
@@ -1822,15 +1762,13 @@ function animate(){
         rightArm.rotation.x=
             swing*.82;
 
-
         const bounce=
             Math.abs(
                 Math.sin(
                     animTime*2
                 )
             )*
-            (running ? .075 : .035);
-
+            (running?.075:.035);
 
         body.position.y=
             2.56+bounce;
@@ -1867,147 +1805,99 @@ function animate(){
                 0,
                 .15
             );
-
-        body.position.y=
-            THREE.MathUtils.lerp(
-                body.position.y,
-                2.56,
-                .12
-            );
-
-        head.position.y=
-            THREE.MathUtils.lerp(
-                head.position.y,
-                4.42,
-                .12
-            );
     }
 
 
-    /* --------------------------------------------------------
-       IDLE FLOAT
-    -------------------------------------------------------- */
-
-    if(!moving && !jumping && !riding){
-
-        const idle=
-            Math.sin(
-                performance.now()*.0018
-            )*.025;
-
-        body.position.y=
-            2.56+idle;
-
-        head.position.y=
-            4.42+idle;
-    }
-
-
-    /* --------------------------------------------------------
-       DOLPHIN MOTION
-    -------------------------------------------------------- */
+    /* -----------------------------------------------------
+       DOLPHIN
+    ----------------------------------------------------- */
 
     dolphin.position.y=
         2+
         Math.sin(
-            performance.now()*.002
+            now*1.5
         )*.3;
-
 
     dolphin.rotation.z=
         Math.sin(
-            performance.now()*.0015
+            now*1.1
         )*.035;
 
 
-    /* --------------------------------------------------------
+    /* -----------------------------------------------------
+       WATER WAVES
+    ----------------------------------------------------- */
+
+    const pos=
+        waterGeo.attributes.position;
+
+    for(
+        let i=0;
+        i<pos.count;
+        i++
+    ){
+
+        const x=pos.getX(i);
+        const z=pos.getY(i);
+
+        pos.setZ(
+            i,
+            Math.sin(
+                x*.035+
+                now*.8
+            )*.17+
+            Math.cos(
+                z*.041+
+                now
+            )*.14
+        );
+    }
+
+    pos.needsUpdate=true;
+
+    waterGeo.computeVertexNormals();
+
+
+    /* -----------------------------------------------------
        CAMERA
-    -------------------------------------------------------- */
+    ----------------------------------------------------- */
 
     const target=
         riding
-        ? dolphin.position.clone()
-        : player.position.clone();
+        ?dolphin.position.clone()
+        :player.position.clone();
 
     target.y+=2.15;
 
-
     const distance=
         shiftLock
-        ? 8.8
-        : 10.5;
-
+        ?8.8
+        :10.5;
 
     const desired=
         target.clone();
 
-
-    desired.x +=
+    desired.x+=
         Math.sin(yaw)*
         distance;
 
-
-    desired.z +=
+    desired.z+=
         Math.cos(yaw)*
         distance;
 
-
-    desired.y +=
-        4.8;
-
+    desired.y+=4.8;
 
     camera.position.lerp(
         desired,
         .105
     );
 
-
-    camera.lookAt(
-        target
-    );
+    camera.lookAt(target);
 
 
-    /* --------------------------------------------------------
-       WATER ANIMATION
-    -------------------------------------------------------- */
-
-    const time=
-        performance.now()*.0007;
-
-    for(
-        let i=0;
-        i<waterPosition.count;
-        i++
-    ){
-
-        const x=
-            waterPosition.getX(i);
-
-        const z=
-            waterPosition.getY(i);
-
-        waterPosition.setZ(
-            i,
-            Math.sin(
-                x*.035+
-                time
-            )*.18+
-            Math.cos(
-                z*.041+
-                time*1.2
-            )*.15
-        );
-    }
-
-    waterGeometry.attributes.position
-        .needsUpdate=true;
-
-    waterGeometry.computeVertexNormals();
-
-
-    /* --------------------------------------------------------
+    /* -----------------------------------------------------
        RENDER
-    -------------------------------------------------------- */
+    ----------------------------------------------------- */
 
     renderer.render(
         scene,
@@ -2016,9 +1906,9 @@ function animate(){
 }
 
 
-/* ============================================================
+/* =========================================================
    START
-============================================================ */
+========================================================= */
 
 player.position.set(
     0,
@@ -2041,17 +1931,16 @@ camera.lookAt(
 animate();
 
 
-/* ============================================================
+/* =========================================================
    RESIZE
-============================================================ */
+========================================================= */
 
-window.addEventListener(
+addEventListener(
     "resize",
     ()=>{
 
         camera.aspect=
-            innerWidth/
-            innerHeight;
+            innerWidth/innerHeight;
 
         camera.updateProjectionMatrix();
 
@@ -2063,6 +1952,5 @@ window.addEventListener(
 );
 
 </script>
-
 </body>
 </html>
