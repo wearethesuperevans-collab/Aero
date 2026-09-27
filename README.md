@@ -2,17 +2,18 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="viewport"
+content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+
 <title>Frutiger Aero World</title>
 
 <style>
 html,body{
     margin:0;
-    padding:0;
     width:100%;
     height:100%;
     overflow:hidden;
-    background:#71dcff;
+    background:#72dcff;
     touch-action:none;
     font-family:Arial,sans-serif;
 }
@@ -34,72 +35,81 @@ button{
     color:white;
     font-weight:bold;
     pointer-events:auto;
+    user-select:none;
+    -webkit-user-select:none;
+}
+
+#title{
+    position:absolute;
+    top:16px;
+    left:50%;
+    transform:translateX(-50%);
+    color:white;
+    font-size:18px;
+    font-weight:bold;
+    text-shadow:
+        0 2px 5px #08719b,
+        0 0 10px rgba(255,255,255,.4);
 }
 
 #shift{
     position:absolute;
-    top:18px;
     right:18px;
-    padding:13px 17px;
+    top:16px;
+    padding:12px 16px;
     border-radius:15px;
-    background:#168ac2;
+    background:rgba(14,119,183,.85);
+    box-shadow:0 5px 15px rgba(0,0,0,.2);
 }
 
 #shift.active{
-    background:#09ad70;
+    background:#00ad70;
 }
 
 #ride{
     position:absolute;
-    right:25px;
+    right:24px;
     bottom:145px;
     width:72px;
     height:72px;
     border-radius:50%;
-    background:#159dd5;
+    background:rgba(12,147,211,.9);
+    box-shadow:0 5px 18px rgba(0,0,0,.25);
 }
 
 #jump{
     position:absolute;
-    right:25px;
+    right:24px;
     bottom:55px;
     width:72px;
     height:72px;
     border-radius:50%;
-    background:#10b978;
+    background:rgba(8,184,115,.9);
+    box-shadow:0 5px 18px rgba(0,0,0,.25);
 }
 
 #joystick{
     position:absolute;
-    left:25px;
-    bottom:42px;
-    width:125px;
-    height:125px;
+    left:24px;
+    bottom:40px;
+    width:126px;
+    height:126px;
     border-radius:50%;
-    background:rgba(255,255,255,.25);
+    background:rgba(255,255,255,.22);
     border:2px solid rgba(255,255,255,.5);
     pointer-events:auto;
 }
 
 #stick{
     position:absolute;
-    width:58px;
-    height:58px;
     left:50%;
     top:50%;
+    width:58px;
+    height:58px;
     margin:-29px;
     border-radius:50%;
-    background:rgba(255,255,255,.75);
-}
-
-#title{
-    position:absolute;
-    top:18px;
-    left:50%;
-    transform:translateX(-50%);
-    color:white;
-    font-weight:bold;
-    text-shadow:0 2px 5px #16719a;
+    background:rgba(255,255,255,.72);
+    box-shadow:0 4px 12px rgba(0,0,0,.15);
 }
 </style>
 </head>
@@ -125,17 +135,17 @@ button{
 <script>
 
 /* =========================================================
-   SCENE
+   WORLD
 ========================================================= */
 
 const scene = new THREE.Scene();
 
-scene.background = new THREE.Color(0x72dcff);
+scene.background = new THREE.Color(0x78ddff);
 
 scene.fog = new THREE.Fog(
-    0x72dcff,
-    180,
-    500
+    0x78ddff,
+    170,
+    520
 );
 
 
@@ -149,8 +159,6 @@ const camera = new THREE.PerspectiveCamera(
     .1,
     700
 );
-
-camera.position.set(0,8,14);
 
 
 /* =========================================================
@@ -168,37 +176,43 @@ renderer.setSize(
 );
 
 renderer.setPixelRatio(
-    Math.min(devicePixelRatio,1.25)
+    Math.min(window.devicePixelRatio || 1,1.35)
 );
 
 renderer.outputColorSpace =
     THREE.SRGBColorSpace;
 
+renderer.toneMapping =
+    THREE.ACESFilmicToneMapping;
+
+renderer.toneMappingExposure=1.15;
+
 renderer.shadowMap.enabled=true;
-renderer.shadowMap.type=
+
+renderer.shadowMap.type =
     THREE.PCFSoftShadowMap;
 
-document.body.appendChild(
-    renderer.domElement
-);
+document.body.appendChild(renderer.domElement);
 
 
 /* =========================================================
-   LIGHT
+   LIGHTING
 ========================================================= */
 
-scene.add(
+const skyLight =
     new THREE.HemisphereLight(
-        0xd7faff,
-        0x477a36,
+        0xcff8ff,
+        0x315f35,
         2.4
-    )
-);
+    );
+
+scene.add(skyLight);
+
 
 const sun =
     new THREE.DirectionalLight(
         0xffffff,
-        3
+        3.5
     );
 
 sun.position.set(
@@ -209,13 +223,18 @@ sun.position.set(
 
 sun.castShadow=true;
 
-sun.shadow.mapSize.width=1024;
-sun.shadow.mapSize.height=1024;
+sun.shadow.mapSize.width=1536;
+sun.shadow.mapSize.height=1536;
 
-sun.shadow.camera.left=-220;
-sun.shadow.camera.right=220;
-sun.shadow.camera.top=220;
-sun.shadow.camera.bottom=-220;
+sun.shadow.camera.left=-210;
+sun.shadow.camera.right=210;
+sun.shadow.camera.top=210;
+sun.shadow.camera.bottom=-210;
+
+sun.shadow.camera.near=1;
+sun.shadow.camera.far=450;
+
+sun.shadow.bias=-.00015;
 
 scene.add(sun);
 
@@ -224,41 +243,51 @@ scene.add(sun);
    WATER
 ========================================================= */
 
-const water = new THREE.Mesh(
-    new THREE.PlaneGeometry(
-        700,
-        700
-    ),
-    new THREE.MeshStandardMaterial({
-        color:0x20bce6,
-        roughness:.18,
+const waterMaterial =
+    new THREE.MeshPhysicalMaterial({
+
+        color:0x18bce5,
+
+        roughness:.12,
+
         metalness:.05,
+
+        transmission:.05,
+
         transparent:true,
-        opacity:.8
-    })
-);
+
+        opacity:.82,
+
+        clearcoat:.7,
+
+        clearcoatRoughness:.12
+    });
+
+
+const water =
+    new THREE.Mesh(
+        new THREE.PlaneGeometry(
+            700,
+            700
+        ),
+        waterMaterial
+    );
 
 water.rotation.x=-Math.PI/2;
 
 water.position.y=-4;
 
+water.receiveShadow=true;
+
 scene.add(water);
 
 
 /* =========================================================
-   NEW GUARANTEED GROUND
+   SOLID ISLAND BASE
+   THIS PREVENTS THE INVISIBLE-GROUND BUG
 ========================================================= */
 
-/*
-   THIS IS THE IMPORTANT FIX.
-
-   Instead of relying on a CircleGeometry,
-   the island is an enormous SOLID BOX.
-
-   The top is always visible.
-*/
-
-const groundBase =
+const islandBase =
     new THREE.Mesh(
         new THREE.BoxGeometry(
             390,
@@ -266,23 +295,27 @@ const groundBase =
             390
         ),
         new THREE.MeshStandardMaterial({
-            color:0x4eb957,
-            roughness:1
+
+            color:0x429f4c,
+
+            roughness:.95,
+
+            metalness:0
         })
     );
 
-groundBase.position.y=-1.7;
+islandBase.position.y=-1.7;
 
-groundBase.receiveShadow=true;
+islandBase.receiveShadow=true;
 
-scene.add(groundBase);
+scene.add(islandBase);
 
 
 /* =========================================================
-   GRASS TOP
+   GRASS SURFACE
 ========================================================= */
 
-const grassTop =
+const grass =
     new THREE.Mesh(
         new THREE.BoxGeometry(
             370,
@@ -290,40 +323,41 @@ const grassTop =
             370
         ),
         new THREE.MeshStandardMaterial({
-            color:0x55c95b,
-            roughness:1
+
+            color:0x51c75a,
+
+            roughness:.95
         })
     );
 
-grassTop.position.y=.15;
+grass.position.y=.15;
 
-grassTop.receiveShadow=true;
+grass.receiveShadow=true;
 
-scene.add(grassTop);
+scene.add(grass);
 
 
 /* =========================================================
    BEACH
 ========================================================= */
 
-const beachMat =
-    new THREE.MeshStandardMaterial({
-        color:0xf4df9b,
-        roughness:1
-    });
-
 const beach =
     new THREE.Mesh(
         new THREE.CylinderGeometry(
-            150,
-            150,
+            153,
+            153,
             .42,
-            96
+            128
         ),
-        beachMat
+        new THREE.MeshStandardMaterial({
+
+            color:0xf3df9b,
+
+            roughness:.92
+        })
     );
 
-beach.position.y=.38;
+beach.position.y=.42;
 
 beach.receiveShadow=true;
 
@@ -331,7 +365,7 @@ scene.add(beach);
 
 
 /* =========================================================
-   INNER GRASS ISLAND
+   INNER GRASS
 ========================================================= */
 
 const innerGrass =
@@ -339,16 +373,18 @@ const innerGrass =
         new THREE.CylinderGeometry(
             130,
             130,
-            .48,
-            96
+            .5,
+            128
         ),
         new THREE.MeshStandardMaterial({
-            color:0x4fc85a,
-            roughness:1
+
+            color:0x4fc85b,
+
+            roughness:.9
         })
     );
 
-innerGrass.position.y=.6;
+innerGrass.position.y=.68;
 
 innerGrass.receiveShadow=true;
 
@@ -356,42 +392,62 @@ scene.add(innerGrass);
 
 
 /* =========================================================
-   GRASS PATCHES
+   ROCKS
 ========================================================= */
 
-const patchMat =
+const rockMaterial =
     new THREE.MeshStandardMaterial({
-        color:0x6bd866,
-        roughness:1
+
+        color:0x91c8d0,
+
+        roughness:.82,
+
+        metalness:.02
     });
 
-for(let i=0;i<100;i++){
+for(let i=0;i<55;i++){
 
-    const a=Math.random()*Math.PI*2;
+    const angle=
+        Math.random()*Math.PI*2;
 
-    const r=
-        15+
-        Math.random()*110;
+    const radius=
+        115+
+        Math.random()*35;
 
-    const patch=
+    const rock =
         new THREE.Mesh(
-            new THREE.CircleGeometry(
-                1.5+
-                Math.random()*5,
-                12
+            new THREE.IcosahedronGeometry(
+                .8+
+                Math.random()*1.7,
+                1
             ),
-            patchMat
+            rockMaterial
         );
 
-    patch.rotation.x=-Math.PI/2;
+    rock.position.set(
 
-    patch.position.set(
-        Math.cos(a)*r,
-        .87,
-        Math.sin(a)*r
+        Math.cos(angle)*radius,
+
+        1,
+
+        Math.sin(angle)*radius
     );
 
-    scene.add(patch);
+    rock.scale.y=
+        .5+
+        Math.random()*.6;
+
+    rock.rotation.set(
+        Math.random(),
+        Math.random(),
+        Math.random()
+    );
+
+    rock.castShadow=true;
+
+    rock.receiveShadow=true;
+
+    scene.add(rock);
 }
 
 
@@ -399,86 +455,146 @@ for(let i=0;i<100;i++){
    TREES
 ========================================================= */
 
-const trunkGeo =
+const trunkGeometry =
     new THREE.CylinderGeometry(
-        .45,
-        .7,
+        .42,
+        .65,
         5.5,
         8
     );
 
-const trunkMat =
+const trunkMaterial =
     new THREE.MeshStandardMaterial({
-        color:0x86522e,
+
+        color:0x79502e,
+
         roughness:.9
     });
 
-const leafGeo =
+const leafGeometry =
     new THREE.IcosahedronGeometry(
-        3,
+        3.2,
         1
     );
 
-const leafMat =
+const leafMaterial =
     new THREE.MeshStandardMaterial({
-        color:0x22a94c,
-        roughness:.9
+
+        color:0x1da84a,
+
+        roughness:.8
     });
 
-for(let i=0;i<100;i++){
 
-    const a=Math.random()*Math.PI*2;
+for(let i=0;i<105;i++){
 
-    const r=
-        38+
-        Math.random()*83;
+    const angle=
+        Math.random()*Math.PI*2;
 
-    const tree=
+    const radius=
+        35+
+        Math.random()*90;
+
+    const tree =
         new THREE.Group();
 
-    const trunk=
+
+    const trunk =
         new THREE.Mesh(
-            trunkGeo,
-            trunkMat
+            trunkGeometry,
+            trunkMaterial
         );
 
     trunk.position.y=3;
 
+    trunk.castShadow=true;
+
     tree.add(trunk);
 
-    const leaves=
+
+    const leaves =
         new THREE.Mesh(
-            leafGeo,
-            leafMat
+            leafGeometry,
+            leafMaterial
         );
 
     leaves.position.y=7;
 
     leaves.scale.setScalar(
-        .8+
-        Math.random()*.4
+        .85+
+        Math.random()*.35
     );
+
+    leaves.castShadow=true;
 
     tree.add(leaves);
 
+
     tree.position.set(
-        Math.cos(a)*r,
+
+        Math.cos(angle)*radius,
+
         .8,
-        Math.sin(a)*r
+
+        Math.sin(angle)*radius
     );
 
     tree.rotation.y=
         Math.random()*Math.PI;
-
-    trunk.castShadow=true;
-    leaves.castShadow=true;
 
     scene.add(tree);
 }
 
 
 /* =========================================================
-   PLAYER
+   SMALL PLANTS
+========================================================= */
+
+const plantMaterial =
+    new THREE.MeshStandardMaterial({
+        color:0x198f42,
+        roughness:.9
+    });
+
+for(let i=0;i<130;i++){
+
+    const angle=
+        Math.random()*Math.PI*2;
+
+    const radius=
+        20+
+        Math.random()*110;
+
+    const plant =
+        new THREE.Mesh(
+            new THREE.ConeGeometry(
+                .25+
+                Math.random()*.2,
+
+                .8+
+                Math.random()*.7,
+
+                5
+            ),
+            plantMaterial
+        );
+
+    plant.position.set(
+
+        Math.cos(angle)*radius,
+
+        1,
+
+        Math.sin(angle)*radius
+    );
+
+    scene.add(plant);
+}
+
+
+/* =========================================================
+   CHARACTER
+   BLUE VERSION OF THE REFERENCE DESIGN
 ========================================================= */
 
 const player =
@@ -487,244 +603,401 @@ const player =
 scene.add(player);
 
 
-const blueMat =
+/*
+   Main blue suit
+*/
+
+const suitBlue =
     new THREE.MeshStandardMaterial({
-        color:0x168dcc,
-        roughness:.32
+
+        color:0x087fc5,
+
+        roughness:.25,
+
+        metalness:.15,
+
+        clearcoat:.5,
+
+        clearcoatRoughness:.18
     });
 
-const lightBlueMat =
+
+const suitLight =
     new THREE.MeshStandardMaterial({
-        color:0x62d8f4,
-        roughness:.3
+
+        color:0x43c8f0,
+
+        roughness:.22,
+
+        metalness:.12,
+
+        clearcoat:.6
     });
 
-const whiteMat =
+
+const suitDark =
     new THREE.MeshStandardMaterial({
+
+        color:0x04527e,
+
+        roughness:.3,
+
+        metalness:.12
+    });
+
+
+const visorWhite =
+    new THREE.MeshStandardMaterial({
+
         color:0xf4ffff,
-        roughness:.25
+
+        roughness:.16,
+
+        metalness:.05,
+
+        clearcoat:.8
     });
 
-const darkMat =
+
+const visorBlue =
     new THREE.MeshStandardMaterial({
-        color:0x075d8e,
-        roughness:.4
+
+        color:0x9cecff,
+
+        roughness:.12,
+
+        metalness:.2,
+
+        transparent:true,
+
+        opacity:.82,
+
+        clearcoat:1
     });
 
 
-/* BODY */
+/* =========================================================
+   BODY ARMOR
+========================================================= */
 
-const body=
+const torso =
     new THREE.Mesh(
         new THREE.SphereGeometry(
-            1.2,
-            24,
-            16
-        ),
-        blueMat
-    );
-
-body.scale.set(
-    1,
-    1.25,
-    .72
-);
-
-body.position.y=2.45;
-
-body.castShadow=true;
-
-player.add(body);
-
-
-/* CHEST */
-
-const chest=
-    new THREE.Mesh(
-        new THREE.SphereGeometry(
-            1,
-            20,
-            14
-        ),
-        lightBlueMat
-    );
-
-chest.scale.set(
-    .76,
-    .72,
-    .3
-);
-
-chest.position.set(
-    0,
-    2.55,
-    -.7
-);
-
-player.add(chest);
-
-
-/* HEAD */
-
-const head=
-    new THREE.Mesh(
-        new THREE.SphereGeometry(
-            1.05,
+            1.25,
             28,
             20
         ),
-        blueMat
+        suitBlue
     );
 
-head.position.y=4;
+torso.scale.set(
+    1,
+    1.25,
+    .74
+);
+
+torso.position.y=2.45;
+
+torso.castShadow=true;
+
+player.add(torso);
+
+
+/* center armor */
+
+const centerArmor =
+    new THREE.Mesh(
+        new THREE.SphereGeometry(
+            1,
+            24,
+            16
+        ),
+        suitLight
+    );
+
+centerArmor.scale.set(
+    .75,
+    .82,
+    .3
+);
+
+centerArmor.position.set(
+    0,
+    2.52,
+    -.78
+);
+
+centerArmor.castShadow=true;
+
+player.add(centerArmor);
+
+
+/* =========================================================
+   HEAD
+========================================================= */
+
+const head =
+    new THREE.Mesh(
+        new THREE.SphereGeometry(
+            1.05,
+            32,
+            24
+        ),
+        suitBlue
+    );
+
+head.position.y=4.02;
 
 head.castShadow=true;
 
 player.add(head);
 
 
-/* FACE */
+/* face/visor */
 
-const face=
+const visor =
     new THREE.Mesh(
         new THREE.SphereGeometry(
             .78,
+            28,
+            20
+        ),
+        visorWhite
+    );
+
+visor.scale.set(
+    .96,
+    .7,
+    .2
+);
+
+visor.position.set(
+    0,
+    4,
+    -.91
+);
+
+player.add(visor);
+
+
+/* blue visor center */
+
+const visorGlass =
+    new THREE.Mesh(
+        new THREE.SphereGeometry(
+            .54,
             24,
             16
         ),
-        whiteMat
+        visorBlue
     );
 
-face.scale.set(
-    .95,
-    .72,
-    .22
+visorGlass.scale.set(
+    1,
+    .55,
+    .13
 );
 
-face.position.set(
+visorGlass.position.set(
     0,
-    3.98,
-    -.88
+    4,
+    -1.05
 );
 
-player.add(face);
+player.add(visorGlass);
 
 
-/* EYES */
+/* =========================================================
+   SHOULDER ARMOR
+========================================================= */
 
-function makeEye(x){
+function shoulder(x){
 
-    const eye=
+    const s =
         new THREE.Mesh(
             new THREE.SphereGeometry(
-                .13,
-                12,
-                8
+                .52,
+                20,
+                14
             ),
-            darkMat
+            suitLight
         );
 
-    eye.position.set(
-        x,
-        4.05,
-        -1.05
+    s.scale.set(
+        1.25,
+        .75,
+        1
     );
 
-    player.add(eye);
-}
-
-makeEye(-.27);
-makeEye(.27);
-
-
-/* ARMS */
-
-function arm(x){
-
-    const a=
-        new THREE.Mesh(
-            new THREE.CapsuleGeometry(
-                .31,
-                1.15,
-                8,
-                12
-            ),
-            blueMat
-        );
-
-    a.position.set(
+    s.position.set(
         x,
-        2.4,
+        2.9,
         0
     );
 
-    a.rotation.z=
-        x<0 ? -.12 : .12;
+    s.castShadow=true;
 
-    a.castShadow=true;
+    player.add(s);
 
-    player.add(a);
-
-    return a;
+    return s;
 }
 
-const leftArm=arm(-1.35);
-const rightArm=arm(1.35);
+shoulder(-1.25);
+shoulder(1.25);
 
 
-/* LEGS */
+/* =========================================================
+   ARMS
+========================================================= */
 
-function leg(x){
+function makeArm(x){
 
-    const l=
-        new THREE.Mesh(
-            new THREE.CapsuleGeometry(
-                .36,
-                1.15,
-                8,
-                12
-            ),
-            darkMat
-        );
+    const group=
+        new THREE.Group();
 
-    l.position.set(
+    group.position.set(
         x,
-        .95,
+        2.35,
         0
     );
 
-    l.castShadow=true;
+    const upper =
+        new THREE.Mesh(
+            new THREE.CapsuleGeometry(
+                .32,
+                1.05,
+                8,
+                14
+            ),
+            suitBlue
+        );
 
-    player.add(l);
+    upper.castShadow=true;
 
-    return l;
+    group.add(upper);
+
+
+    const glove =
+        new THREE.Mesh(
+            new THREE.SphereGeometry(
+                .38,
+                18,
+                14
+            ),
+            suitDark
+        );
+
+    glove.position.y=-.75;
+
+    glove.castShadow=true;
+
+    group.add(glove);
+
+    player.add(group);
+
+    return group;
 }
 
-const leftLeg=leg(-.52);
-const rightLeg=leg(.52);
+const leftArm=makeArm(-1.4);
+const rightArm=makeArm(1.4);
+
+
+/* =========================================================
+   LEGS
+========================================================= */
+
+function makeLeg(x){
+
+    const group=
+        new THREE.Group();
+
+    group.position.set(
+        x,
+        1,
+        0
+    );
+
+    const leg =
+        new THREE.Mesh(
+            new THREE.CapsuleGeometry(
+                .37,
+                1.2,
+                8,
+                14
+            ),
+            suitDark
+        );
+
+    leg.castShadow=true;
+
+    group.add(leg);
+
+
+    const boot =
+        new THREE.Mesh(
+            new THREE.SphereGeometry(
+                .43,
+                18,
+                12
+            ),
+            suitBlue
+        );
+
+    boot.scale.set(
+        1.15,
+        .65,
+        1.35
+    );
+
+    boot.position.set(
+        0,
+        -.8,
+        -.12
+    );
+
+    boot.castShadow=true;
+
+    group.add(boot);
+
+    player.add(group);
+
+    return group;
+}
+
+const leftLeg=makeLeg(-.52);
+const rightLeg=makeLeg(.52);
 
 
 /* =========================================================
    DOLPHIN
 ========================================================= */
 
-const dolphin=
+const dolphin =
     new THREE.Group();
 
-const dolphinMat=
-    new THREE.MeshStandardMaterial({
-        color:0x48bce2,
-        roughness:.3
+const dolphinMaterial =
+    new THREE.MeshPhysicalMaterial({
+
+        color:0x43b9df,
+
+        roughness:.22,
+
+        metalness:.08,
+
+        clearcoat:.8,
+
+        clearcoatRoughness:.12
     });
 
-const dolphinBody=
+
+const dolphinBody =
     new THREE.Mesh(
         new THREE.SphereGeometry(
             2,
-            24,
-            16
+            28,
+            20
         ),
-        dolphinMat
+        dolphinMaterial
     );
 
 dolphinBody.scale.set(
@@ -733,39 +1006,68 @@ dolphinBody.scale.set(
     .8
 );
 
+dolphinBody.castShadow=true;
+
 dolphin.add(dolphinBody);
 
 
-const nose=
+/* nose */
+
+const dolphinNose =
     new THREE.Mesh(
         new THREE.ConeGeometry(
             .5,
             1.8,
-            16
+            18
         ),
-        dolphinMat
+        dolphinMaterial
     );
 
-nose.rotation.z=-Math.PI/2;
-nose.position.x=3.2;
+dolphinNose.rotation.z=
+    -Math.PI/2;
 
-dolphin.add(nose);
+dolphinNose.position.x=3.2;
+
+dolphin.add(dolphinNose);
 
 
-const tail=
+/* tail */
+
+const dolphinTail =
     new THREE.Mesh(
         new THREE.ConeGeometry(
-            1.25,
+            1.2,
             1.8,
             4
         ),
-        dolphinMat
+        dolphinMaterial
     );
 
-tail.rotation.z=Math.PI/2;
-tail.position.x=-3;
+dolphinTail.rotation.z=
+    Math.PI/2;
 
-dolphin.add(tail);
+dolphinTail.position.x=-3;
+
+dolphin.add(dolphinTail);
+
+
+/* fin */
+
+const dolphinFin =
+    new THREE.Mesh(
+        new THREE.ConeGeometry(
+            .7,
+            1.7,
+            4
+        ),
+        dolphinMaterial
+    );
+
+dolphinFin.position.y=1.1;
+
+dolphinFin.rotation.z=Math.PI;
+
+dolphin.add(dolphinFin);
 
 
 dolphin.position.set(
@@ -774,13 +1076,14 @@ dolphin.position.set(
     -20
 );
 
-dolphin.rotation.y=Math.PI/2;
+dolphin.rotation.y=
+    Math.PI/2;
 
 scene.add(dolphin);
 
 
 /* =========================================================
-   CONTROLS
+   INPUT
 ========================================================= */
 
 const keys={};
@@ -800,7 +1103,9 @@ addEventListener(
 );
 
 
-/* JOYSTICK */
+/* =========================================================
+   JOYSTICK
+========================================================= */
 
 const joystick=
     document.getElementById(
@@ -816,7 +1121,7 @@ let joyX=0;
 let joyY=0;
 let joyActive=false;
 
-function moveJoystick(e){
+function updateJoystick(e){
 
     const r=
         joystick.getBoundingClientRect();
@@ -831,14 +1136,13 @@ function moveJoystick(e){
 
     const max=43;
 
-    const len=
+    const length=
         Math.sqrt(x*x+y*y);
 
-    if(len>max){
+    if(length>max){
 
-        x=x/len*max;
-        y=y/len*max;
-
+        x=x/length*max;
+        y=y/length*max;
     }
 
     joyX=x/max;
@@ -851,28 +1155,35 @@ function moveJoystick(e){
 joystick.addEventListener(
     "pointerdown",
     e=>{
+
         joyActive=true;
+
         joystick.setPointerCapture(
             e.pointerId
         );
-        moveJoystick(e);
+
+        updateJoystick(e);
     }
 );
 
 joystick.addEventListener(
     "pointermove",
     e=>{
+
         if(joyActive)
-            moveJoystick(e);
+            updateJoystick(e);
     }
 );
 
 joystick.addEventListener(
     "pointerup",
     ()=>{
+
         joyActive=false;
+
         joyX=0;
         joyY=0;
+
         stick.style.transform=
             "translate(0,0)";
     }
@@ -884,17 +1195,22 @@ joystick.addEventListener(
 ========================================================= */
 
 let yaw=0;
+
 let shiftLock=false;
+
 let dragging=false;
+
 let lastX=0;
 
 renderer.domElement.addEventListener(
     "pointerdown",
     e=>{
 
-        if(shiftLock)return;
+        if(shiftLock)
+            return;
 
         dragging=true;
+
         lastX=e.clientX;
     }
 );
@@ -903,8 +1219,11 @@ renderer.domElement.addEventListener(
     "pointermove",
     e=>{
 
-        if(!dragging)return;
-        if(shiftLock)return;
+        if(!dragging)
+            return;
+
+        if(shiftLock)
+            return;
 
         const dx=
             e.clientX-lastX;
@@ -955,17 +1274,22 @@ document.getElementById("shift")
 ========================================================= */
 
 let jumping=false;
-let velocityY=0;
+
+let verticalVelocity=0;
 
 document.getElementById("jump")
 .addEventListener(
     "pointerdown",
     ()=>{
 
-        if(!jumping){
+        if(
+            !jumping &&
+            !riding
+        ){
 
             jumping=true;
-            velocityY=9;
+
+            verticalVelocity=9;
         }
     }
 );
@@ -982,16 +1306,17 @@ document.getElementById("ride")
     "pointerdown",
     ()=>{
 
-        const d=
+        const distance=
             player.position.distanceTo(
                 dolphin.position
             );
 
-        if(d<13){
+        if(distance<13){
 
             riding=!riding;
 
-            player.visible=!riding;
+            player.visible=
+                !riding;
         }
     }
 );
@@ -1021,53 +1346,66 @@ function animate(){
 
     /* INPUT */
 
-    let x=0;
-    let z=0;
-
-    if(keys["a"]||
-       keys["arrowleft"])
-        x--;
-
-    if(keys["d"]||
-       keys["arrowright"])
-        x++;
-
-    if(keys["w"]||
-       keys["arrowup"])
-        z--;
-
-    if(keys["s"]||
-       keys["arrowdown"])
-        z++;
+    let moveX=0;
+    let moveY=0;
 
 
     if(
-        Math.abs(joyX)>.08||
+        keys["a"] ||
+        keys["arrowleft"]
+    )
+        moveX=-1;
+
+
+    if(
+        keys["d"] ||
+        keys["arrowright"]
+    )
+        moveX=1;
+
+
+    if(
+        keys["w"] ||
+        keys["arrowup"]
+    )
+        moveY=-1;
+
+
+    if(
+        keys["s"] ||
+        keys["arrowdown"]
+    )
+        moveY=1;
+
+
+    if(
+        Math.abs(joyX)>.08 ||
         Math.abs(joyY)>.08
     ){
 
-        x=joyX;
-        z=joyY;
+        moveX=joyX;
+        moveY=joyY;
     }
 
 
-    const length=
+    const inputLength=
         Math.sqrt(
-            x*x+z*z
+            moveX*moveX+
+            moveY*moveY
         );
 
-    if(length>1){
+    if(inputLength>1){
 
-        x/=length;
-        z/=length;
+        moveX/=inputLength;
+        moveY/=inputLength;
     }
 
 
     const moving=
-        length>.08;
+        inputLength>.08;
 
 
-    /* DIRECTIONS */
+    /* CAMERA DIRECTIONS */
 
     const forward=
         new THREE.Vector3(
@@ -1083,26 +1421,33 @@ function animate(){
             Math.sin(yaw)
         );
 
+
     const direction=
         new THREE.Vector3();
 
+
     direction.addScaledVector(
         right,
-        x
+        moveX
     );
 
     direction.addScaledVector(
         forward,
-        -z
+        -moveY
     );
 
 
-    if(direction.lengthSq()>.001){
+    /* MOVEMENT */
+
+    if(
+        direction.lengthSq()>.001
+    ){
 
         direction.normalize();
 
         const speed=
             riding ? 14 : 9;
+
 
         if(riding){
 
@@ -1122,7 +1467,8 @@ function animate(){
 
         if(shiftLock){
 
-            player.rotation.y=yaw;
+            player.rotation.y=
+                yaw;
 
         }else{
 
@@ -1146,68 +1492,90 @@ function animate(){
 
     /* JUMP */
 
-    if(jumping && !riding){
+    if(
+        jumping &&
+        !riding
+    ){
 
-        velocityY-=22*dt;
+        verticalVelocity-=22*dt;
 
         player.position.y+=
-            velocityY*dt;
+            verticalVelocity*dt;
 
-        if(player.position.y<=.82){
 
-            player.position.y=.82;
-            velocityY=0;
+        if(
+            player.position.y<=.85
+        ){
+
+            player.position.y=.85;
+
+            verticalVelocity=0;
+
             jumping=false;
         }
 
     }else if(!riding){
 
-        player.position.y=.82;
+        player.position.y=.85;
     }
 
 
-    /* KEEP PLAYER ON WORLD */
+    /* WORLD LIMIT */
 
-    const max=175;
+    const limit=172;
 
-    function clampObject(obj){
+    function limitObject(obj){
 
-        const d=Math.sqrt(
-            obj.position.x*
-            obj.position.x+
-            obj.position.z*
-            obj.position.z
-        );
+        const distance=
+            Math.sqrt(
+                obj.position.x*
+                obj.position.x+
+                obj.position.z*
+                obj.position.z
+            );
 
-        if(d>max){
+        if(distance>limit){
 
-            const s=max/d;
+            const scale=
+                limit/distance;
 
-            obj.position.x*=s;
-            obj.position.z*=s;
+            obj.position.x*=scale;
+            obj.position.z*=scale;
         }
     }
 
-    if(!riding)
-        clampObject(player);
-
-    clampObject(dolphin);
+    limitObject(player);
+    limitObject(dolphin);
 
 
     /* WALK ANIMATION */
 
-    if(moving && !riding){
+    if(
+        moving &&
+        !riding
+    ){
 
-        walkTime+=dt*10;
+        walkTime+=
+            dt*10;
 
         const swing=
-            Math.sin(walkTime)*.45;
+            Math.sin(
+                walkTime
+            )*.45;
 
-        leftLeg.rotation.x=swing;
-        rightLeg.rotation.x=-swing;
 
-        leftArm.rotation.x=-swing*.8;
-        rightArm.rotation.x=swing*.8;
+        leftLeg.rotation.x=
+            swing;
+
+        rightLeg.rotation.x=
+            -swing;
+
+
+        leftArm.rotation.x=
+            -swing*.8;
+
+        rightArm.rotation.x=
+            swing*.8;
 
     }else{
 
@@ -1241,7 +1609,7 @@ function animate(){
     }
 
 
-    /* DOLPHIN FLOAT */
+    /* DOLPHIN BOB */
 
     dolphin.position.y=
         2+
@@ -1250,7 +1618,7 @@ function animate(){
         )*.3;
 
 
-    /* CAMERA TARGET */
+    /* CAMERA */
 
     const target=
         riding
@@ -1263,22 +1631,27 @@ function animate(){
     const distance=
         shiftLock ? 9 : 10;
 
-    const camTarget=
+
+    const desiredCamera=
         target.clone();
 
-    camTarget.x+=
-        Math.sin(yaw)*distance;
 
-    camTarget.z+=
-        Math.cos(yaw)*distance;
+    desiredCamera.x+=
+        Math.sin(yaw)*
+        distance;
 
-    camTarget.y+=5;
+    desiredCamera.z+=
+        Math.cos(yaw)*
+        distance;
+
+    desiredCamera.y+=5;
 
 
     camera.position.lerp(
-        camTarget,
+        desiredCamera,
         .12
     );
+
 
     camera.lookAt(
         target
@@ -1293,26 +1666,37 @@ function animate(){
 
 
 /* =========================================================
-   START
+   INITIAL POSITION
 ========================================================= */
 
 player.position.set(
     0,
-    .82,
+    .85,
     0
 );
 
-animate();
+camera.position.set(
+    0,
+    7,
+    13
+);
+
+camera.lookAt(
+    player.position
+);
 
 
-/* RESIZE */
+/* =========================================================
+   RESIZE
+========================================================= */
 
 addEventListener(
     "resize",
     ()=>{
 
         camera.aspect=
-            innerWidth/innerHeight;
+            innerWidth/
+            innerHeight;
 
         camera.updateProjectionMatrix();
 
@@ -1322,6 +1706,13 @@ addEventListener(
         );
     }
 );
+
+
+/* =========================================================
+   START
+========================================================= */
+
+animate();
 
 </script>
 
