@@ -13,7 +13,6 @@ viewport-fit=cover">
 <title>Frutiger Aero World</title>
 
 <style>
-
 *{
     box-sizing:border-box;
     user-select:none;
@@ -26,7 +25,7 @@ html,body{
     width:100%;
     height:100%;
     overflow:hidden;
-    background:#51ddff;
+    background:#55dcff;
     font-family:Arial,sans-serif;
 }
 
@@ -45,30 +44,26 @@ html,body{
     pointer-events:none;
 }
 
-/* TOP */
-
 #title{
     position:absolute;
-    left:20px;
     top:17px;
+    left:20px;
     color:white;
     font-size:23px;
     font-weight:900;
     text-shadow:
-        0 2px 5px rgba(0,80,130,.7),
+        0 2px 5px rgba(0,70,120,.8),
         0 0 15px rgba(255,255,255,.4);
 }
 
 #subtitle{
     position:absolute;
-    left:21px;
     top:48px;
+    left:21px;
     color:white;
     font-size:12px;
-    text-shadow:0 2px 5px rgba(0,80,130,.7);
+    text-shadow:0 2px 5px rgba(0,70,120,.8);
 }
-
-/* JOYSTICK */
 
 #joystick{
     position:absolute;
@@ -77,85 +72,60 @@ html,body{
     width:132px;
     height:132px;
     border-radius:50%;
-
     background:rgba(255,255,255,.18);
-
     border:3px solid rgba(255,255,255,.75);
-
     box-shadow:
-        0 9px 28px rgba(0,80,130,.25),
-        inset 0 0 25px rgba(255,255,255,.25);
-
+        0 10px 30px rgba(0,70,120,.3),
+        inset 0 0 25px rgba(255,255,255,.3);
     pointer-events:auto;
     touch-action:none;
 }
 
 #stick{
     position:absolute;
-
     left:50%;
     top:50%;
-
     width:60px;
     height:60px;
-
     transform:translate(-50%,-50%);
-
     border-radius:50%;
-
-    background:
-        linear-gradient(
-            145deg,
-            #ffffff,
-            #b5f5ff
-        );
-
+    background:linear-gradient(
+        145deg,
+        #ffffff,
+        #b9f5ff
+    );
     border:3px solid white;
-
     box-shadow:
-        0 5px 18px rgba(0,90,130,.25),
+        0 5px 18px rgba(0,70,120,.3),
         inset 0 0 10px white;
 }
 
-/* BUTTONS */
-
 #buttons{
     position:absolute;
-
     right:20px;
     bottom:22px;
-
     display:flex;
     gap:11px;
-
     align-items:end;
 }
 
 button{
     width:76px;
     height:76px;
-
     border-radius:50%;
-
     border:3px solid white;
-
     color:white;
-
     font-size:10px;
     font-weight:900;
-
     background:
         linear-gradient(
-            #9cf8ff,
-            #17a9d8
+            #a2f8ff,
+            #18a9d9
         );
-
     box-shadow:
-        0 7px 22px rgba(0,80,130,.3),
-        inset 0 3px 9px rgba(255,255,255,.55);
-
+        0 8px 24px rgba(0,70,120,.32),
+        inset 0 3px 9px rgba(255,255,255,.6);
     pointer-events:auto;
-
     touch-action:none;
 }
 
@@ -166,38 +136,27 @@ button:active{
 #shiftButton.active{
     background:
         linear-gradient(
-            #fff56c,
-            #ffae25
+            #fff37b,
+            #ffad22
         );
-
-    color:#5b4300;
+    color:#614300;
 }
-
-/* PORTRAIT */
 
 #rotate{
     display:none;
-
     position:fixed;
     inset:0;
-
     z-index:100;
-
     background:
         linear-gradient(
             #54e2ff,
-            #c9fbff
+            #d2fcff
         );
-
     align-items:center;
     justify-content:center;
-
     flex-direction:column;
-
     text-align:center;
-
     color:#08799e;
-
     font-weight:900;
 }
 
@@ -207,13 +166,10 @@ button:active{
 }
 
 @media (orientation:portrait) and (max-width:900px){
-
     #rotate{
         display:flex;
     }
-
 }
-
 </style>
 </head>
 
@@ -228,7 +184,7 @@ button:active{
     </div>
 
     <div id="subtitle">
-        Explore the open world • Find the dolphin
+        Explore the island • Beaches • Grasslands • Forest
     </div>
 
     <div id="joystick">
@@ -255,16 +211,12 @@ button:active{
 
 <div id="rotate">
 
-    <div id="rotateIcon">
-        ↔️
-    </div>
+    <div id="rotateIcon">↔️</div>
 
-    <div>
-        TURN YOUR iPAD SIDEWAYS
-    </div>
+    <div>TURN YOUR iPAD SIDEWAYS</div>
 
     <small>
-        Landscape gives you the full world.
+        Landscape mode gives you the full world.
     </small>
 
 </div>
@@ -272,31 +224,26 @@ button:active{
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 
-
 <script>
 
-/* =========================================================
+/* ============================================================
    FRUTIGER AERO WORLD
-   ROBLOX-STYLE THIRD PERSON CAMERA
-   ========================================================= */
+   LARGE SINGLE ISLAND
+   ============================================================ */
 
 
-/* =========================================================
+/* ============================================================
    RENDERER
-   ========================================================= */
+   ============================================================ */
 
 const canvas =
 document.getElementById("game");
 
 const renderer =
 new THREE.WebGLRenderer({
-
-    canvas,
-
+    canvas:canvas,
     antialias:true,
-
-    powerPreference:
-        "high-performance"
+    powerPreference:"high-performance"
 });
 
 renderer.setPixelRatio(
@@ -317,7 +264,7 @@ THREE.SRGBColorSpace;
 renderer.toneMapping =
 THREE.ACESFilmicToneMapping;
 
-renderer.toneMappingExposure=1.18;
+renderer.toneMappingExposure=1.15;
 
 renderer.shadowMap.enabled=true;
 
@@ -325,9 +272,9 @@ renderer.shadowMap.type =
 THREE.PCFSoftShadowMap;
 
 
-/* =========================================================
+/* ============================================================
    SCENE
-   ========================================================= */
+   ============================================================ */
 
 const scene =
 new THREE.Scene();
@@ -339,399 +286,1046 @@ new THREE.Color(
 
 scene.fog =
 new THREE.Fog(
-    0x70e3ff,
-    140,
-    650
+    0x72e5ff,
+    120,
+    700
 );
 
 
-/* =========================================================
+/* ============================================================
    CAMERA
-   ========================================================= */
+   ============================================================ */
 
 const camera =
 new THREE.PerspectiveCamera(
     67,
     innerWidth/innerHeight,
     .1,
-    1000
+    1200
 );
 
 camera.position.set(
     0,
     7,
-    18
+    17
 );
 
 
-/* =========================================================
+/* ============================================================
    LIGHTING
-   ========================================================= */
+   ============================================================ */
 
-const hemisphere =
+const skyLight =
 new THREE.HemisphereLight(
     0xeaffff,
-    0x328a50,
-    2.7
+    0x276e43,
+    2.8
 );
 
-scene.add(hemisphere);
+scene.add(skyLight);
 
 
 const sun =
 new THREE.DirectionalLight(
     0xffffff,
-    4
+    4.5
 );
 
 sun.position.set(
-    -120,
-    170,
-    100
+    -180,
+    230,
+    150
 );
 
 sun.castShadow=true;
 
+/* HIGH QUALITY SHADOWS */
+
 sun.shadow.mapSize.width=4096;
 sun.shadow.mapSize.height=4096;
 
-sun.shadow.camera.left=-220;
-sun.shadow.camera.right=220;
-sun.shadow.camera.top=220;
-sun.shadow.camera.bottom=-220;
+sun.shadow.camera.left=-260;
+sun.shadow.camera.right=260;
+sun.shadow.camera.top=260;
+sun.shadow.camera.bottom=-260;
 
-sun.shadow.bias=-.00025;
+sun.shadow.camera.near=1;
+sun.shadow.camera.far=650;
+
+sun.shadow.bias=-0.00015;
+
+sun.shadow.normalBias=.015;
 
 scene.add(sun);
 
 
-/* =========================================================
+/* ============================================================
    MATERIALS
-   ========================================================= */
+   ============================================================ */
 
-const blueBody =
+const beachMaterial =
 new THREE.MeshPhysicalMaterial({
-
-    color:0x1a9fe3,
-
-    roughness:.14,
-
-    metalness:.03,
-
-    clearcoat:1,
-
-    clearcoatRoughness:.04
+    color:0xf4e5a5,
+    roughness:.9,
+    clearcoat:.15
 });
 
-
-const cyanBody =
+const grassMaterial =
 new THREE.MeshPhysicalMaterial({
-
-    color:0x45dfff,
-
-    roughness:.08,
-
-    metalness:.02,
-
-    transparent:true,
-
-    opacity:.94,
-
-    clearcoat:1,
-
-    clearcoatRoughness:.025
-});
-
-
-const whiteGloss =
-new THREE.MeshBasicMaterial({
-
-    color:0xffffff,
-
-    transparent:true,
-
-    opacity:.72
-});
-
-
-const greenGrass =
-new THREE.MeshPhysicalMaterial({
-
-    color:0x45d36b,
-
+    color:0x42ce61,
     roughness:.78,
-
-    clearcoat:.25
+    clearcoat:.25,
+    clearcoatRoughness:.4
 });
 
-
-const greenDark =
+const forestGrassMaterial =
 new THREE.MeshPhysicalMaterial({
-
-    color:0x15994f,
-
-    roughness:.7
+    color:0x239d50,
+    roughness:.84,
+    clearcoat:.2
 });
 
-
-const dirt =
+const rockMaterial =
 new THREE.MeshStandardMaterial({
-
-    color:0x58a65e,
-
+    color:0x55955a,
     roughness:.95
 });
 
+const waterMaterial =
+new THREE.MeshPhysicalMaterial({
+    color:0x13c4ea,
+    roughness:.1,
+    metalness:.05,
+    transparent:true,
+    opacity:.92,
+    clearcoat:1,
+    clearcoatRoughness:.05,
+    depthWrite:false
+});
 
 const trunkMaterial =
 new THREE.MeshStandardMaterial({
-
-    color:0xc98a4b,
-
+    color:0xb97943,
     roughness:.9
 });
 
-
-/* =========================================================
-   WATER
-   ========================================================= */
-
-const waterGeometry =
-new THREE.PlaneGeometry(
-    1400,
-    1400,
-    180,
-    180
-);
-
-const waterMaterial =
+const leafMaterial =
 new THREE.MeshPhysicalMaterial({
-
-    color:0x10bee9,
-
-    roughness:.12,
-
-    metalness:.08,
-
-    transparent:true,
-
-    opacity:.94,
-
-    clearcoat:1,
-
-    clearcoatRoughness:.05
+    color:0x14984d,
+    roughness:.6,
+    clearcoat:.3,
+    clearcoatRoughness:.3
 });
+
+const leafLightMaterial =
+new THREE.MeshPhysicalMaterial({
+    color:0x2acb61,
+    roughness:.58,
+    clearcoat:.3
+});
+
+
+/* ============================================================
+   LARGE OCEAN
+   ============================================================ */
 
 const water =
 new THREE.Mesh(
-    waterGeometry,
+    new THREE.PlaneGeometry(
+        1600,
+        1600,
+        64,
+        64
+    ),
     waterMaterial
 );
 
 water.rotation.x=
 -Math.PI/2;
 
-water.position.y=-1.55;
+water.position.y=-1.8;
 
 water.receiveShadow=true;
 
 scene.add(water);
 
 
-/* =========================================================
-   OPEN WORLD ISLANDS
-   ========================================================= */
+/* ============================================================
+   SINGLE HUGE ISLAND TERRAIN
+   ============================================================
 
-const worldIslands=[];
+   IMPORTANT:
+
+   There is ONLY ONE terrain mesh.
+
+   No overlapping cylinders.
+   No stacked ground pieces.
+   No coplanar surfaces.
+
+   This prevents the old ground flickering/
+   texture-glitch effect.
+   ============================================================ */
+
+const GRID=170;
+const HALF=210;
+
+const vertices=[];
+const indices=[];
+const zoneGroups={
+    beach:[],
+    grass:[],
+    forest:[]
+};
 
 
-function makeIsland(
+/* deterministic terrain noise */
+
+function noise2(x,z){
+
+    return (
+        Math.sin(x*.035)*
+        .9+
+        Math.sin(z*.047)*
+        .7+
+        Math.sin((x+z)*.021)*
+        1.1+
+        Math.cos((x-z)*.031)*
+        .6
+    );
+}
+
+
+function terrainHeight(x,z){
+
+    const r=
+        Math.sqrt(
+            x*x+
+            z*z
+        );
+
+    /*
+       Island radius ~190.
+    */
+
+    const edge=
+        THREE.MathUtils.clamp(
+            (r-135)/60,
+            0,
+            1
+        );
+
+    /*
+       Soft island edge.
+    */
+
+    const base=
+        2.5+
+        Math.max(
+            0,
+            3.5*(1-edge)
+        );
+
+    const hills=
+        noise2(x,z)*.8;
+
+    /*
+       Beach stays low.
+    */
+
+    if(r>132){
+
+        const beachBlend=
+            THREE.MathUtils.clamp(
+                (r-132)/48,
+                0,
+                1
+            );
+
+        return (
+            base+
+            hills*.25-
+            beachBlend*2.5
+        );
+    }
+
+    return base+hills;
+}
+
+
+/* CREATE GRID */
+
+for(let z=0;z<=GRID;z++){
+
+    for(let x=0;x<=GRID;x++){
+
+        const px=
+            -HALF+
+            (x/GRID)*
+            HALF*2;
+
+        const pz=
+            -HALF+
+            (z/GRID)*
+            HALF*2;
+
+        const radius=
+            Math.sqrt(
+                px*px+
+                pz*pz
+            );
+
+        /*
+           Outside island:
+           force terrain far below ocean.
+        */
+
+        let py=
+            terrainHeight(
+                px,
+                pz
+            );
+
+        if(radius>188){
+
+            const drop=
+                Math.min(
+                    35,
+                    (radius-188)*2
+                );
+
+            py-=drop;
+        }
+
+        vertices.push(
+            px,
+            py,
+            pz
+        );
+    }
+}
+
+
+/* CREATE TRIANGLES */
+
+for(let z=0;z<GRID;z++){
+
+    for(let x=0;x<GRID;x++){
+
+        const a=
+            z*(GRID+1)+x;
+
+        const b=a+1;
+
+        const c=
+            a+(GRID+1);
+
+        const d=c+1;
+
+
+        /*
+           Alternate diagonal directions
+           to reduce visible grid patterns.
+        */
+
+        if((x+z)%2===0){
+
+            indices.push(
+                a,b,d,
+                a,d,c
+            );
+
+        }else{
+
+            indices.push(
+                a,b,c,
+                b,d,c
+            );
+        }
+    }
+}
+
+
+const terrainGeometry =
+new THREE.BufferGeometry();
+
+terrainGeometry.setAttribute(
+    "position",
+    new THREE.Float32BufferAttribute(
+        vertices,
+        3
+    )
+);
+
+terrainGeometry.setIndex(
+    indices
+);
+
+terrainGeometry.computeVertexNormals();
+
+
+/* ============================================================
+   TERRAIN ZONE MATERIALS
+   ============================================================ */
+
+terrainGeometry.clearGroups();
+
+let triangleCounter=0;
+
+
+for(let z=0;z<GRID;z++){
+
+    for(let x=0;x<GRID;x++){
+
+        const px=
+            -HALF+
+            (x/GRID)*
+            HALF*2;
+
+        const pz=
+            -HALF+
+            (z/GRID)*
+            HALF*2;
+
+        const radius=
+            Math.sqrt(
+                px*px+
+                pz*pz
+            );
+
+        /*
+           Beach:
+           outer ring
+
+           Grassland:
+           middle ring
+
+           Forest:
+           northern/western portion
+           of the huge island
+        */
+
+        let materialIndex=1;
+
+        if(radius>132){
+
+            materialIndex=0;
+
+        }else{
+
+            /*
+               Forest zone is mostly
+               toward the north-west.
+            */
+
+            const forestDirection=
+                pz < 20 &&
+                px < 75;
+
+            const forestRadius=
+                radius>65;
+
+            if(
+                forestDirection &&
+                forestRadius
+            ){
+
+                materialIndex=2;
+            }
+        }
+
+
+        terrainGeometry.addGroup(
+            triangleCounter*4,
+            6,
+            materialIndex
+        );
+
+        triangleCounter++;
+    }
+}
+
+
+const terrain =
+new THREE.Mesh(
+    terrainGeometry,
+    [
+        beachMaterial,
+        grassMaterial,
+        forestGrassMaterial
+    ]
+);
+
+terrain.castShadow=true;
+
+terrain.receiveShadow=true;
+
+scene.add(terrain);
+
+
+/* ============================================================
+   BEACH DETAILS
+   ============================================================ */
+
+function createBeachRock(
     x,
     z,
-    radius,
-    height
+    scale
 ){
-
-    const island =
-    new THREE.Group();
-
-
-    /* ROCK */
 
     const rock =
     new THREE.Mesh(
-
-        new THREE.CylinderGeometry(
-            radius*.88,
-            radius*1.18,
-            height,
-            64
+        new THREE.IcosahedronGeometry(
+            1,
+            2
         ),
-
-        dirt
+        new THREE.MeshStandardMaterial({
+            color:0xc8c3a1,
+            roughness:.9
+        })
     );
 
-    rock.position.y=
-    -height/2;
+    const y=
+        terrainHeight(
+            x,
+            z
+        );
+
+    rock.position.set(
+        x,
+        y+.35*scale,
+        z
+    );
+
+    rock.scale.set(
+        1.2*scale,
+        .45*scale,
+        .8*scale
+    );
+
+    rock.rotation.y=
+        Math.random()*Math.PI;
 
     rock.castShadow=true;
 
     rock.receiveShadow=true;
 
-    island.add(rock);
-
-
-    /* GRASS TOP */
-
-    const grass =
-    new THREE.Mesh(
-
-        new THREE.CylinderGeometry(
-            radius,
-            radius*1.05,
-            .8,
-            64
-        ),
-
-        greenGrass
-    );
-
-    grass.position.y=-.4;
-
-    grass.castShadow=true;
-
-    grass.receiveShadow=true;
-
-    island.add(grass);
-
-
-    island.position.set(
-        x,
-        0,
-        z
-    );
-
-    scene.add(island);
-
-
-    worldIslands.push({
-
-        x:x,
-
-        z:z,
-
-        radius:radius
-    });
+    scene.add(rock);
 }
 
 
-/* MAIN CONTINENT */
+/* beach rocks */
 
-makeIsland(
-    0,
-    0,
-    55,
-    9
-);
+for(let i=0;i<65;i++){
+
+    const angle=
+        Math.random()*
+        Math.PI*2;
+
+    const radius=
+        137+
+        Math.random()*38;
+
+    const x=
+        Math.cos(angle)*radius;
+
+    const z=
+        Math.sin(angle)*radius;
+
+    if(
+        Math.sqrt(x*x+z*z)<190
+    ){
+
+        createBeachRock(
+            x,
+            z,
+            .3+
+            Math.random()*.8
+        );
+    }
+}
 
 
-/* DISTANT ISLANDS */
+/* ============================================================
+   TREE SYSTEM
+   ============================================================ */
 
-makeIsland(
-    -115,
-    -75,
-    35,
-    8
-);
+function createTree(
+    x,
+    z,
+    scale
+){
 
-makeIsland(
-    120,
-    -105,
-    42,
-    9
-);
+    const y=
+        terrainHeight(
+            x,
+            z
+        );
 
-makeIsland(
-    150,
-    85,
-    32,
-    8
-);
+    const tree =
+        new THREE.Group();
 
-makeIsland(
-    -150,
-    110,
-    40,
-    8
-);
 
-makeIsland(
-    280,
-    10,
+    /* trunk */
+
+    const trunk =
+        new THREE.Mesh(
+            new THREE.CylinderGeometry(
+                .32*scale,
+                .55*scale,
+                7*scale,
+                20
+            ),
+            trunkMaterial
+        );
+
+    trunk.position.y=
+        3.5*scale;
+
+    trunk.castShadow=true;
+
+    trunk.receiveShadow=true;
+
+    tree.add(trunk);
+
+
+    /* branch */
+
+    const branch =
+        new THREE.Mesh(
+            new THREE.CylinderGeometry(
+                .13*scale,
+                .2*scale,
+                2.7*scale,
+                12
+            ),
+            trunkMaterial
+        );
+
+    branch.position.set(
+        -.7*scale,
+        4.3*scale,
+        0
+    );
+
+    branch.rotation.z=
+        -.8;
+
+    branch.castShadow=true;
+
+    tree.add(branch);
+
+
+    /* crown */
+
+    const crown =
+        new THREE.Group();
+
+    crown.position.y=
+        6.8*scale;
+
+    tree.add(crown);
+
+
+    for(let i=0;i<11;i++){
+
+        const angle=
+            i*Math.PI*2/11;
+
+        const leaf =
+            new THREE.Mesh(
+                new THREE.SphereGeometry(
+                    1,
+                    28,
+                    20
+                ),
+                i%3===0
+                ? leafLightMaterial
+                : leafMaterial
+            );
+
+        leaf.scale.set(
+            2.2*scale,
+            .72*scale,
+            1.35*scale
+        );
+
+        leaf.position.set(
+            Math.cos(angle)*
+                1.45*scale,
+            (i%3)*.45*scale,
+            Math.sin(angle)*
+                1.45*scale
+        );
+
+        leaf.rotation.y=
+            -angle;
+
+        leaf.castShadow=true;
+
+        crown.add(leaf);
+    }
+
+
+    /*
+       Extra center foliage.
+    */
+
+    const center =
+        new THREE.Mesh(
+            new THREE.SphereGeometry(
+                1.7*scale,
+                32,
+                24
+            ),
+            leafMaterial
+        );
+
+    center.position.y=
+        6.9*scale;
+
+    center.castShadow=true;
+
+    tree.add(center);
+
+
+    tree.position.set(
+        x,
+        y,
+        z
+    );
+
+    tree.rotation.y=
+        Math.random()*
+        Math.PI*2;
+
+    scene.add(tree);
+}
+
+
+/* ============================================================
+   FOREST
+
+   Dense forest in one region.
+   ============================================================ */
+
+for(let i=0;i<210;i++){
+
+    const x=
+        -105+
+        Math.random()*180;
+
+    const z=
+        -120+
+        Math.random()*125;
+
+    const radius=
+        Math.sqrt(
+            x*x+
+            z*z
+        );
+
+    /*
+       Keep trees inside the island
+       and in the forest region.
+    */
+
+    if(
+        radius>68 &&
+        radius<130 &&
+        z<20 &&
+        x<75
+    ){
+
+        createTree(
+            x,
+            z,
+            .75+
+            Math.random()*.65
+        );
+    }
+}
+
+
+/* ============================================================
+   GRASSLAND TREES
+   ============================================================ */
+
+for(let i=0;i<45;i++){
+
+    const angle=
+        Math.random()*
+        Math.PI*2;
+
+    const radius=
+        45+
+        Math.random()*65;
+
+    const x=
+        Math.cos(angle)*radius;
+
+    const z=
+        Math.sin(angle)*radius;
+
+    if(
+        !(z<20 &&
+          x<75 &&
+          radius>68)
+    ){
+
+        createTree(
+            x,
+            z,
+            .65+
+            Math.random()*.4
+        );
+    }
+}
+
+
+/* ============================================================
+   GRASS FLOWERS
+   ============================================================ */
+
+function createFlower(
+    x,
+    z
+){
+
+    const group=
+        new THREE.Group();
+
+    const stem =
+        new THREE.Mesh(
+            new THREE.CylinderGeometry(
+                .025,
+                .04,
+                .35,
+                8
+            ),
+            new THREE.MeshStandardMaterial({
+                color:0x38a94e
+            })
+        );
+
+    stem.position.y=.18;
+
+    group.add(stem);
+
+
+    const flower =
+        new THREE.Mesh(
+            new THREE.SphereGeometry(
+                .12,
+                16,
+                12
+            ),
+            new THREE.MeshPhysicalMaterial({
+                color:
+                    Math.random()>.5
+                    ?0xffffff
+                    :0xfff04c,
+                roughness:.4,
+                clearcoat:.4
+            })
+        );
+
+    flower.position.y=.4;
+
+    group.add(flower);
+
+
+    const y=
+        terrainHeight(
+            x,
+            z
+        );
+
+    group.position.set(
+        x,
+        y,
+        z
+    );
+
+    scene.add(group);
+}
+
+
+for(let i=0;i<280;i++){
+
+    const angle=
+        Math.random()*
+        Math.PI*2;
+
+    const radius=
+        20+
+        Math.random()*105;
+
+    const x=
+        Math.cos(angle)*radius;
+
+    const z=
+        Math.sin(angle)*radius;
+
+    if(
+        Math.sqrt(x*x+z*z)<125
+    ){
+
+        createFlower(
+            x,
+            z
+        );
+    }
+}
+
+
+/* ============================================================
+   CLOUDS
+   ============================================================ */
+
+function createCloud(
+    x,
+    y,
+    z,
+    scale
+){
+
+    const cloud =
+        new THREE.Group();
+
+
+    for(let i=0;i<12;i++){
+
+        const puff =
+            new THREE.Mesh(
+
+                new THREE.SphereGeometry(
+                    1,
+                    32,
+                    24
+                ),
+
+                new THREE.MeshPhysicalMaterial({
+
+                    color:0xffffff,
+
+                    roughness:.3,
+
+                    clearcoat:.75,
+
+                    clearcoatRoughness:.1
+                })
+            );
+
+        puff.scale.setScalar(
+            (.8+
+            Math.random()*.9)*
+            scale
+        );
+
+        puff.position.set(
+            (i-5.5)*
+                1.4*
+                scale,
+
+            Math.random()*
+                1.2*
+                scale,
+
+            Math.random()*
+                .8*
+                scale
+        );
+
+        cloud.add(puff);
+    }
+
+
+    cloud.position.set(
+        x,y,z
+    );
+
+    scene.add(cloud);
+}
+
+
+createCloud(
+    -120,
     48,
-    9
+    -170,
+    2.5
 );
 
-makeIsland(
-    -300,
-    -30,
-    50,
-    9
+createCloud(
+    100,
+    54,
+    -230,
+    3
 );
 
-makeIsland(
-    340,
-    -180,
-    38,
-    8
+createCloud(
+    220,
+    44,
+    30,
+    2
 );
 
-makeIsland(
-    -350,
-    200,
-    45,
-    9
+createCloud(
+    -230,
+    48,
+    140,
+    2.5
 );
 
 
-/* =========================================================
+/* ============================================================
    AERO CHARACTER
-   BODY DESIGN BASED ON YOUR IMAGE
-   ========================================================= */
+   ============================================================ */
 
 function makeAeroGuy(){
 
     const guy =
-    new THREE.Group();
+        new THREE.Group();
 
 
     /*
-      TORSO
-
-      Rounded pear-like body
-      instead of a capsule.
+       TORSO
     */
 
     const torso =
-    new THREE.Mesh(
+        new THREE.Mesh(
 
-        new THREE.SphereGeometry(
-            1,
-            64,
-            48
-        ),
+            new THREE.SphereGeometry(
+                1,
+                64,
+                48
+            ),
 
-        cyanBody
-    );
+            new THREE.MeshPhysicalMaterial({
+
+                color:0x32caff,
+
+                roughness:.12,
+
+                metalness:.02,
+
+                transparent:true,
+
+                opacity:.94,
+
+                clearcoat:1,
+
+                clearcoatRoughness:.025
+            })
+        );
 
     torso.scale.set(
-        1.25,
-        1.45,
+        1.27,
+        1.43,
         .92
     );
 
     torso.position.y=
-    1.72;
+        1.75;
 
     torso.castShadow=true;
 
@@ -741,55 +1335,77 @@ function makeAeroGuy(){
 
 
     /*
-      DARKER INNER BODY
+       INNER TORSO
     */
 
-    const inner =
-    new THREE.Mesh(
+    const innerTorso =
+        new THREE.Mesh(
 
-        new THREE.SphereGeometry(
-            .98,
-            48,
-            36
-        ),
+            new THREE.SphereGeometry(
+                .98,
+                48,
+                36
+            ),
 
-        blueBody
+            new THREE.MeshPhysicalMaterial({
+
+                color:0x168ee0,
+
+                roughness:.13,
+
+                transparent:true,
+
+                opacity:.4,
+
+                clearcoat:1
+            })
+        );
+
+    innerTorso.scale.set(
+        1.18,
+        1.34,
+        .87
     );
 
-    inner.scale.set(
-        1.20,
-        1.36,
-        .89
-    );
+    innerTorso.position.y=
+        1.72;
 
-    inner.position.y=
-    1.69;
-
-    inner.material.transparent=true;
-
-    inner.material.opacity=.38;
-
-    guy.add(inner);
+    guy.add(innerTorso);
 
 
     /*
-      BIG ROUND HEAD
+       HEAD
     */
 
     const head =
-    new THREE.Mesh(
+        new THREE.Mesh(
 
-        new THREE.SphereGeometry(
-            1.03,
-            64,
-            48
-        ),
+            new THREE.SphereGeometry(
+                1.05,
+                64,
+                48
+            ),
 
-        cyanBody
-    );
+            new THREE.MeshPhysicalMaterial({
+
+                color:0x38cfff,
+
+                roughness:.1,
+
+                metalness:.02,
+
+                transparent:true,
+
+                opacity:.95,
+
+                clearcoat:1,
+
+                clearcoatRoughness:.02
+            })
+        );
 
     head.position.y=
-    3.68;
+        3.72;
 
     head.castShadow=true;
 
@@ -799,124 +1415,148 @@ function makeAeroGuy(){
 
 
     /*
-      HEAD GLASS INNER COLOR
+       HEAD INNER COLOR
     */
 
     const headInner =
-    new THREE.Mesh(
+        new THREE.Mesh(
 
-        new THREE.SphereGeometry(
-            .98,
-            48,
-            36
-        ),
+            new THREE.SphereGeometry(
+                .98,
+                48,
+                36
+            ),
 
-        blueBody
-    );
+            new THREE.MeshPhysicalMaterial({
+
+                color:0x1597df,
+
+                roughness:.12,
+
+                transparent:true,
+
+                opacity:.3,
+
+                clearcoat:1
+            })
+        );
 
     headInner.position.y=
-    3.67;
-
-    headInner.material.transparent=true;
-
-    headInner.material.opacity=.32;
+        3.70;
 
     guy.add(headInner);
 
 
     /*
-      GLOSS ON HEAD
+       HEAD GLOSS
     */
 
     const headGloss =
-    new THREE.Mesh(
+        new THREE.Mesh(
 
-        new THREE.SphereGeometry(
-            .34,
-            32,
-            24
-        ),
+            new THREE.SphereGeometry(
+                .36,
+                32,
+                24
+            ),
 
-        whiteGloss
-    );
+            new THREE.MeshBasicMaterial({
+                color:0xffffff,
+                transparent:true,
+                opacity:.78
+            })
+        );
 
     headGloss.scale.set(
-        1.45,
-        .5,
-        .4
+        1.5,
+        .52,
+        .42
     );
 
     headGloss.position.set(
         -.32,
-        4.10,
-        -.82
+        4.15,
+        -.84
     );
 
     guy.add(headGloss);
 
 
     /*
-      BODY HIGHLIGHT
+       BODY GLOSS
     */
 
-    const bodyHighlight =
-    new THREE.Mesh(
+    const bodyGloss =
+        new THREE.Mesh(
 
-        new THREE.SphereGeometry(
-            .42,
-            32,
-            24
-        ),
+            new THREE.SphereGeometry(
+                .42,
+                32,
+                24
+            ),
 
-        whiteGloss
-    );
+            new THREE.MeshBasicMaterial({
+                color:0xffffff,
+                transparent:true,
+                opacity:.42
+            })
+        );
 
-    bodyHighlight.scale.set(
-        1.4,
+    bodyGloss.scale.set(
+        1.45,
         .65,
         .3
     );
 
-    bodyHighlight.position.set(
-        -.6,
-        2.25,
-        -.78
+    bodyGloss.position.set(
+        -.62,
+        2.28,
+        -.8
     );
 
-    bodyHighlight.material.opacity=.38;
-
-    guy.add(bodyHighlight);
+    guy.add(bodyGloss);
 
 
     /*
-      LEFT ARM
+       LEFT ARM
     */
 
     const leftArm =
-    new THREE.Mesh(
+        new THREE.Mesh(
 
-        new THREE.SphereGeometry(
-            1,
-            48,
-            36
-        ),
+            new THREE.SphereGeometry(
+                1,
+                48,
+                36
+            ),
 
-        cyanBody
-    );
+            new THREE.MeshPhysicalMaterial({
+
+                color:0x32caff,
+
+                roughness:.1,
+
+                transparent:true,
+
+                opacity:.94,
+
+                clearcoat:1
+            })
+        );
 
     leftArm.scale.set(
-        .40,
+        .42,
         .98,
-        .47
+        .48
     );
 
     leftArm.position.set(
-        -1.28,
+        -1.32,
         1.48,
         0
     );
 
-    leftArm.rotation.z=.18;
+    leftArm.rotation.z=.16;
 
     leftArm.castShadow=true;
 
@@ -924,34 +1564,45 @@ function makeAeroGuy(){
 
 
     /*
-      RIGHT ARM
+       RIGHT ARM
     */
 
     const rightArm =
-    new THREE.Mesh(
+        new THREE.Mesh(
 
-        new THREE.SphereGeometry(
-            1,
-            48,
-            36
-        ),
+            new THREE.SphereGeometry(
+                1,
+                48,
+                36
+            ),
 
-        cyanBody
-    );
+            new THREE.MeshPhysicalMaterial({
+
+                color:0x32caff,
+
+                roughness:.1,
+
+                transparent:true,
+
+                opacity:.94,
+
+                clearcoat:1
+            })
+        );
 
     rightArm.scale.set(
-        .40,
+        .42,
         .98,
-        .47
+        .48
     );
 
     rightArm.position.set(
-        1.28,
+        1.32,
         1.48,
         0
     );
 
-    rightArm.rotation.z=-.18;
+    rightArm.rotation.z=-.16;
 
     rightArm.castShadow=true;
 
@@ -959,31 +1610,40 @@ function makeAeroGuy(){
 
 
     /*
-      LEGS
-
-      Separate rounded legs like the image.
+       LEFT LEG
     */
 
     const leftLeg =
-    new THREE.Mesh(
+        new THREE.Mesh(
 
-        new THREE.SphereGeometry(
-            1,
-            48,
-            36
-        ),
+            new THREE.SphereGeometry(
+                1,
+                48,
+                36
+            ),
 
-        cyanBody
-    );
+            new THREE.MeshPhysicalMaterial({
+
+                color:0x32caff,
+
+                roughness:.1,
+
+                transparent:true,
+
+                opacity:.95,
+
+                clearcoat:1
+            })
+        );
 
     leftLeg.scale.set(
         .50,
-        .82,
+        .84,
         .56
     );
 
     leftLeg.position.set(
-        -.54,
+        -.55,
         .18,
         0
     );
@@ -993,26 +1653,41 @@ function makeAeroGuy(){
     guy.add(leftLeg);
 
 
+    /*
+       RIGHT LEG
+    */
+
     const rightLeg =
-    new THREE.Mesh(
+        new THREE.Mesh(
 
-        new THREE.SphereGeometry(
-            1,
-            48,
-            36
-        ),
+            new THREE.SphereGeometry(
+                1,
+                48,
+                36
+            ),
 
-        cyanBody
-    );
+            new THREE.MeshPhysicalMaterial({
+
+                color:0x32caff,
+
+                roughness:.1,
+
+                transparent:true,
+
+                opacity:.95,
+
+                clearcoat:1
+            })
+        );
 
     rightLeg.scale.set(
         .50,
-        .82,
+        .84,
         .56
     );
 
     rightLeg.position.set(
-        .54,
+        .55,
         .18,
         0
     );
@@ -1022,72 +1697,92 @@ function makeAeroGuy(){
     guy.add(rightLeg);
 
 
+    /*
+       STORE ANIMATION PARTS
+    */
+
+    guy.userData.animation={
+
+        leftArm:leftArm,
+
+        rightArm:rightArm,
+
+        leftLeg:leftLeg,
+
+        rightLeg:rightLeg,
+
+        torso:torso,
+
+        head:head
+    };
+
+
     return guy;
 }
 
 
-/* =========================================================
+/* ============================================================
    PLAYER
-   ========================================================= */
+   ============================================================ */
 
 const player =
-makeAeroGuy();
+    makeAeroGuy();
 
 /*
-   Bottom of legs is around -0.64.
-   Raise character so feet sit directly
-   above the world.
+   Feet bottom ≈ -.66.
+   Ground ≈ 5 around starting area.
+   Player root is adjusted to terrain.
 */
 
+const startX=0;
+const startZ=35;
+
 player.position.set(
-    0,
-    .65,
-    10
+    startX,
+    terrainHeight(
+        startX,
+        startZ
+    )+.67,
+    startZ
 );
 
 scene.add(player);
 
 
-/* =========================================================
-   NPC GUYS
-   ========================================================= */
+/* ============================================================
+   NPCS
+   ============================================================ */
 
 const npcs=[];
 
-
 const npcLocations=[
 
-    [-12,5],
-
-    [14,-5],
-
-    [-27,-18],
-
-    [28,15],
-
-    [-8,30],
-
-    [35,-30],
-
-    [-40,10],
-
-    [5,-38]
-
+    [-20,20],
+    [18,15],
+    [-45,35],
+    [50,20],
+    [-35,-25],
+    [40,-35],
+    [5,-55],
+    [70,-10]
 ];
 
 
 npcLocations.forEach(
-    position=>{
+    p=>{
 
-        const npc =
-        makeAeroGuy();
+        const npc=
+            makeAeroGuy();
 
         npc.scale.setScalar(.78);
 
         npc.position.set(
-            position[0],
-            .65,
-            position[1]
+            p[0],
+            terrainHeight(
+                p[0],
+                p[1]
+            )+.67,
+            p[1]
         );
 
         scene.add(npc);
@@ -1097,313 +1792,45 @@ npcLocations.forEach(
 );
 
 
-/* =========================================================
-   PALM TREES
-   ========================================================= */
-
-function makePalm(
-    x,
-    z,
-    scale
-){
-
-    const tree =
-    new THREE.Group();
-
-
-    const height=
-    7*scale;
-
-
-    const trunk =
-    new THREE.Mesh(
-
-        new THREE.CylinderGeometry(
-            .25*scale,
-            .45*scale,
-            height,
-            20
-        ),
-
-        trunkMaterial
-    );
-
-    /*
-       IMPORTANT:
-       Tree starts at y=0.
-       It no longer sinks deep into ground.
-    */
-
-    trunk.position.y=
-    height/2;
-
-    trunk.castShadow=true;
-
-    tree.add(trunk);
-
-
-    const crown =
-    new THREE.Group();
-
-    crown.position.y=
-    height;
-
-    tree.add(crown);
-
-
-    for(let i=0;i<9;i++){
-
-        const angle=
-        i*Math.PI*2/9;
-
-        const leaf =
-        new THREE.Mesh(
-
-            new THREE.SphereGeometry(
-                1,
-                24,
-                16
-            ),
-
-            greenDark
-        );
-
-        leaf.scale.set(
-            2.8*scale,
-            .14*scale,
-            .48*scale
-        );
-
-        leaf.position.set(
-            Math.cos(angle)*1.5*scale,
-            0,
-            Math.sin(angle)*1.5*scale
-        );
-
-        leaf.rotation.y=
-        -angle;
-
-        leaf.castShadow=true;
-
-        crown.add(leaf);
-    }
-
-
-    tree.position.set(
-        x,
-        0,
-        z
-    );
-
-    scene.add(tree);
-}
-
-
-/* TREES ON MAIN ISLAND */
-
-const treeSpots=[
-
-    [-30,10,.9],
-    [-22,-20,.8],
-    [-10,35,.8],
-    [12,30,.9],
-    [27,16,.75],
-    [35,-5,.8],
-    [28,-25,.9],
-    [5,-34,.8],
-    [-20,-35,.75],
-    [-38,-15,.75],
-    [40,35,.7],
-    [-40,30,.8]
-];
-
-
-treeSpots.forEach(
-    p=>{
-        makePalm(
-            p[0],
-            p[1],
-            p[2]
-        );
-    }
-);
-
-
-/* TREES ON DISTANT ISLANDS */
-
-for(let islandIndex=0;
-    islandIndex<worldIslands.length;
-    islandIndex++){
-
-    const island=
-    worldIslands[islandIndex];
-
-    if(islandIndex===0)
-        continue;
-
-    for(let i=0;i<9;i++){
-
-        const angle=
-        Math.random()*Math.PI*2;
-
-        const radius=
-        Math.random()*
-        island.radius*.7;
-
-        makePalm(
-
-            island.x+
-            Math.cos(angle)*radius,
-
-            island.z+
-            Math.sin(angle)*radius,
-
-            .65+
-            Math.random()*.3
-        );
-    }
-}
-
-
-/* =========================================================
-   CLOUDS
-   ========================================================= */
-
-function makeCloud(
-    x,
-    y,
-    z,
-    size
-){
-
-    const cloud =
-    new THREE.Group();
-
-
-    for(let i=0;i<10;i++){
-
-        const puff =
-        new THREE.Mesh(
-
-            new THREE.SphereGeometry(
-                1,
-                32,
-                24
-            ),
-
-            new THREE.MeshPhysicalMaterial({
-
-                color:0xffffff,
-
-                roughness:.32,
-
-                clearcoat:.7,
-
-                clearcoatRoughness:.12
-            })
-        );
-
-        puff.scale.setScalar(
-            (.8+
-            Math.random()*.9)*
-            size
-        );
-
-        puff.position.set(
-
-            (i-4.5)*
-            1.5*
-            size,
-
-            Math.random()*
-            1.2*
-            size,
-
-            Math.random()*
-            .8*
-            size
-        );
-
-        cloud.add(puff);
-    }
-
-
-    cloud.position.set(
-        x,
-        y,
-        z
-    );
-
-    scene.add(cloud);
-}
-
-
-makeCloud(
-    -70,
-    48,
-    -130,
-    2.3
-);
-
-makeCloud(
-    80,
-    52,
-    -190,
-    3
-);
-
-makeCloud(
-    180,
-    40,
-    40,
-    2
-);
-
-makeCloud(
-    -180,
-    45,
-    120,
-    2.5
-);
-
-
-/* =========================================================
+/* ============================================================
    DOLPHIN
-   ========================================================= */
+   ============================================================ */
 
 function makeDolphin(){
 
-    const dolphin =
-    new THREE.Group();
+    const dolphin=
+        new THREE.Group();
 
 
-    const material =
-    new THREE.MeshPhysicalMaterial({
+    const material=
+        new THREE.MeshPhysicalMaterial({
 
-        color:0x42c8ea,
+            color:0x48c8eb,
 
-        roughness:.13,
+            roughness:.11,
 
-        metalness:.08,
+            metalness:.07,
 
-        clearcoat:1
-    });
+            clearcoat:1,
+
+            clearcoatRoughness:.03
+        });
 
 
-    const body =
-    new THREE.Mesh(
+    const body=
+        new THREE.Mesh(
 
-        new THREE.SphereGeometry(
-            1,
-            48,
-            32
-        ),
+            new THREE.SphereGeometry(
+                1,
+                64,
+                40
+            ),
 
-        material
-    );
+            material
+        );
 
     body.scale.set(
-        2.4,
+        2.45,
         .72,
         1
     );
@@ -1413,72 +1840,72 @@ function makeDolphin(){
     dolphin.add(body);
 
 
-    const nose =
-    new THREE.Mesh(
+    const nose=
+        new THREE.Mesh(
 
-        new THREE.ConeGeometry(
-            .42,
-            1.7,
-            24
-        ),
+            new THREE.ConeGeometry(
+                .43,
+                1.75,
+                32
+            ),
 
-        material
-    );
+            material
+        );
 
     nose.rotation.z=
-    -Math.PI/2;
+        -Math.PI/2;
 
     nose.position.z=
-    -2.25;
+        -2.3;
 
     dolphin.add(nose);
 
 
-    const dorsal =
-    new THREE.Mesh(
+    const dorsal=
+        new THREE.Mesh(
 
-        new THREE.ConeGeometry(
-            .45,
-            1.5,
-            20
-        ),
+            new THREE.ConeGeometry(
+                .45,
+                1.55,
+                24
+            ),
 
-        material
-    );
+            material
+        );
 
     dorsal.rotation.z=
-    Math.PI;
+        Math.PI;
 
     dorsal.position.y=.85;
 
     dolphin.add(dorsal);
 
 
-    const tail =
-    new THREE.Group();
+    const tail=
+        new THREE.Group();
 
 
     for(
         const side of [-1,1]
     ){
 
-        const fin =
-        new THREE.Mesh(
+        const fin=
+            new THREE.Mesh(
 
-            new THREE.ConeGeometry(
-                .5,
-                1.5,
-                20
-            ),
+                new THREE.ConeGeometry(
+                    .5,
+                    1.55,
+                    24
+                ),
 
-            material
-        );
+                material
+            );
 
         fin.rotation.z=
-        side*.75;
+            side*.75;
 
         fin.position.x=
-        side*.45;
+            side*.45;
 
         tail.add(fin);
     }
@@ -1488,68 +1915,65 @@ function makeDolphin(){
 
     dolphin.add(tail);
 
+
     return dolphin;
 }
 
 
-const dolphin =
-makeDolphin();
+const dolphin=
+    makeDolphin();
 
 dolphin.position.set(
     0,
     -.2,
-    -45
+    -145
 );
 
 scene.add(dolphin);
 
 
-/* =========================================================
+/* ============================================================
    BUBBLES
-   ========================================================= */
+   ============================================================ */
 
 const bubbles=[];
 
+for(let i=0;i<100;i++){
 
-for(let i=0;i<80;i++){
+    const bubble=
+        new THREE.Mesh(
 
-    const bubble =
-    new THREE.Mesh(
+            new THREE.SphereGeometry(
+                .15+
+                Math.random()*.38,
+                24,
+                20
+            ),
 
-        new THREE.SphereGeometry(
-            .2+
-            Math.random()*.4,
+            new THREE.MeshPhysicalMaterial({
 
-            24,
-            20
-        ),
+                color:0xeaffff,
 
-        new THREE.MeshPhysicalMaterial({
+                transparent:true,
 
-            color:0xeaffff,
+                opacity:.4,
 
-            transparent:true,
+                roughness:0,
 
-            opacity:.42,
+                transmission:.25,
 
-            roughness:0,
-
-            transmission:.3,
-
-            clearcoat:1
-        })
-    );
-
+                clearcoat:1
+            })
+        );
 
     bubble.position.set(
 
-        (Math.random()-.5)*600,
+        (Math.random()-.5)*700,
 
         Math.random()*16,
 
-        (Math.random()-.5)*600
+        (Math.random()-.5)*700
     );
-
 
     scene.add(bubble);
 
@@ -1557,25 +1981,24 @@ for(let i=0;i<80;i++){
 }
 
 
-/* =========================================================
-   CONTROLS
-   ========================================================= */
+/* ============================================================
+   MOVEMENT
+   ============================================================ */
 
 let moveX=0;
 let moveZ=0;
 
 let joystickPointer=null;
 
-
 const joystick=
-document.getElementById(
-    "joystick"
-);
+    document.getElementById(
+        "joystick"
+    );
 
 const stick=
-document.getElementById(
-    "stick"
-);
+    document.getElementById(
+        "stick"
+    );
 
 
 joystick.addEventListener(
@@ -1623,32 +2046,31 @@ joystick.addEventListener(
 function updateJoystick(e){
 
     const r=
-    joystick.getBoundingClientRect();
+        joystick.getBoundingClientRect();
 
     let x=
-    e.clientX-
-    (r.left+r.width/2);
+        e.clientX-
+        (r.left+r.width/2);
 
     let y=
-    e.clientY-
-    (r.top+r.height/2);
+        e.clientY-
+        (r.top+r.height/2);
 
     const max=44;
 
-    const distance=
-    Math.hypot(x,y);
+    const length=
+        Math.hypot(x,y);
 
-    if(distance>max){
+    if(length>max){
 
         x=
-        x/distance*max;
+            x/length*max;
 
         y=
-        y/distance*max;
+            y/length*max;
     }
 
     moveX=x/max;
-
     moveZ=y/max;
 
     stick.style.transform=
@@ -1664,7 +2086,6 @@ function resetJoystick(){
     joystickPointer=null;
 
     moveX=0;
-
     moveZ=0;
 
     stick.style.transform=
@@ -1672,9 +2093,9 @@ function resetJoystick(){
 }
 
 
-/* =========================================================
-   ROBLOX STYLE CAMERA
-   ========================================================= */
+/* ============================================================
+   CAMERA
+   ============================================================ */
 
 let cameraYaw=0;
 
@@ -1684,14 +2105,14 @@ let cameraDistance=13;
 
 let cameraDragging=false;
 
-let previousX=0;
+let cameraPointer=null;
 
+let previousX=0;
 let previousY=0;
 
 
 /*
-   Drag the world with your finger
-   to orbit the camera.
+   Right-side camera drag.
 */
 
 canvas.addEventListener(
@@ -1700,8 +2121,10 @@ canvas.addEventListener(
 
         cameraDragging=true;
 
-        previousX=e.clientX;
+        cameraPointer=
+            e.pointerId;
 
+        previousX=e.clientX;
         previousY=e.clientY;
     }
 );
@@ -1711,7 +2134,10 @@ canvas.addEventListener(
     "pointermove",
     e=>{
 
-        if(!cameraDragging)
+        if(
+            !cameraDragging ||
+            e.pointerId!==cameraPointer
+        )
             return;
 
         const dx=
@@ -1723,6 +2149,15 @@ canvas.addEventListener(
             previousY;
 
 
+        /*
+           CAMERA ROTATION ONLY.
+
+           This does NOT rotate the player.
+
+           This is what fixes the old
+           Shift Lock spinning problem.
+        */
+
         cameraYaw -=
             dx*.006;
 
@@ -1732,56 +2167,68 @@ canvas.addEventListener(
 
 
         cameraPitch=
-            Math.max(
+            THREE.MathUtils.clamp(
+                cameraPitch,
                 -.35,
-                Math.min(
-                    .75,
-                    cameraPitch
-                )
+                .7
             );
 
 
-        previousX=
-            e.clientX;
-
-        previousY=
-            e.clientY;
+        previousX=e.clientX;
+        previousY=e.clientY;
     }
 );
 
 
 canvas.addEventListener(
     "pointerup",
-    ()=>{
-        cameraDragging=false;
+    e=>{
+
+        if(
+            e.pointerId===
+            cameraPointer
+        ){
+
+            cameraDragging=false;
+            cameraPointer=null;
+        }
     }
 );
 
 
 canvas.addEventListener(
     "pointercancel",
-    ()=>{
-        cameraDragging=false;
+    e=>{
+
+        if(
+            e.pointerId===
+            cameraPointer
+        ){
+
+            cameraDragging=false;
+            cameraPointer=null;
+        }
     }
 );
 
 
-/* =========================================================
+/* ============================================================
    SHIFT LOCK
-   ========================================================= */
+   ============================================================ */
 
 let shiftLock=false;
 
-
 const shiftButton=
-document.getElementById(
-    "shiftButton"
-);
+    document.getElementById(
+        "shiftButton"
+    );
 
 
 shiftButton.addEventListener(
     "pointerdown",
-    ()=>{
+    e=>{
+
+        e.stopPropagation();
 
         shiftLock=
             !shiftLock;
@@ -1794,9 +2241,9 @@ shiftButton.addEventListener(
 );
 
 
-/* =========================================================
+/* ============================================================
    JUMP
-   ========================================================= */
+   ============================================================ */
 
 let jumping=false;
 
@@ -1820,13 +2267,18 @@ document
 )
 .addEventListener(
     "pointerdown",
-    jump
+    e=>{
+
+        e.stopPropagation();
+
+        jump();
+    }
 );
 
 
-/* =========================================================
+/* ============================================================
    RIDE
-   ========================================================= */
+   ============================================================ */
 
 let riding=false;
 
@@ -1841,7 +2293,7 @@ function toggleRide(){
 
     if(!riding){
 
-        if(distance<11){
+        if(distance<12){
 
             riding=true;
 
@@ -1849,14 +2301,18 @@ function toggleRide(){
                 dolphin.position
             );
 
-            player.position.y+=2.1;
+            player.position.y+=2.2;
         }
 
     }else{
 
         riding=false;
 
-        player.position.y=.65;
+        player.position.y=
+            terrainHeight(
+                player.position.x,
+                player.position.z
+            )+.67;
     }
 }
 
@@ -1867,13 +2323,18 @@ document
 )
 .addEventListener(
     "pointerdown",
-    toggleRide
+    e=>{
+
+        e.stopPropagation();
+
+        toggleRide();
+    }
 );
 
 
-/* =========================================================
+/* ============================================================
    KEYBOARD
-   ========================================================= */
+   ============================================================ */
 
 const keys={};
 
@@ -1921,12 +2382,128 @@ window.addEventListener(
 );
 
 
-/* =========================================================
-   ANIMATION
-   ========================================================= */
+/* ============================================================
+   CHARACTER ANIMATION
+   ============================================================ */
+
+function animateCharacter(
+    character,
+    speed,
+    time,
+    dt
+){
+
+    const a=
+        character.userData.animation;
+
+    if(!a)
+        return;
+
+
+    const moving=
+        speed>.05;
+
+
+    if(moving){
+
+        /*
+           Walking/running cycle.
+        */
+
+        const cycle=
+            time*
+            (
+                speed>5
+                ?10
+                :7
+            );
+
+
+        const swing=
+            Math.sin(cycle)*
+            .65;
+
+
+        const opposite=
+            Math.sin(cycle+
+                Math.PI)*
+            .65;
+
+
+        /*
+           LEGS
+        */
+
+        a.leftLeg.rotation.x=
+            swing;
+
+        a.rightLeg.rotation.x=
+            opposite;
+
+
+        /*
+           ARMS
+        */
+
+        a.leftArm.rotation.x=
+            opposite*.7;
+
+        a.rightArm.rotation.x=
+            swing*.7;
+
+
+        /*
+           BODY BOB
+        */
+
+        character.position.y +=
+            Math.sin(cycle*2)*
+            .018;
+
+
+    }else{
+
+        /*
+           Smoothly return limbs.
+        */
+
+        a.leftLeg.rotation.x=
+            THREE.MathUtils.lerp(
+                a.leftLeg.rotation.x,
+                0,
+                .15
+            );
+
+        a.rightLeg.rotation.x=
+            THREE.MathUtils.lerp(
+                a.rightLeg.rotation.x,
+                0,
+                .15
+            );
+
+        a.leftArm.rotation.x=
+            THREE.MathUtils.lerp(
+                a.leftArm.rotation.x,
+                0,
+                .15
+            );
+
+        a.rightArm.rotation.x=
+            THREE.MathUtils.lerp(
+                a.rightArm.rotation.x,
+                0,
+                .15
+            );
+    }
+}
+
+
+/* ============================================================
+   MAIN ANIMATION
+   ============================================================ */
 
 const clock=
-new THREE.Clock();
+    new THREE.Clock();
 
 
 function animate(){
@@ -1947,73 +2524,69 @@ function animate(){
         clock.elapsedTime;
 
 
-    /* ---------------------------------------
+    /* ========================================================
        KEYBOARD
-       --------------------------------------- */
+       ======================================================== */
 
     let keyboardX=0;
-
     let keyboardZ=0;
 
 
     if(
-        keys["a"] ||
+        keys["a"]||
         keys["arrowleft"]
     )
         keyboardX=-1;
 
 
     if(
-        keys["d"] ||
+        keys["d"]||
         keys["arrowright"]
     )
         keyboardX=1;
 
 
     if(
-        keys["w"] ||
+        keys["w"]||
         keys["arrowup"]
     )
         keyboardZ=-1;
 
 
     if(
-        keys["s"] ||
+        keys["s"]||
         keys["arrowdown"]
     )
         keyboardZ=1;
 
 
-    if(keyboardX!==0)
+    if(
+        keyboardX!==0||
+        keyboardZ!==0
+    ){
+
         moveX=keyboardX;
-
-
-    if(keyboardZ!==0)
         moveZ=keyboardZ;
 
+    }
 
-    /* ---------------------------------------
-       MOVEMENT RELATIVE TO CAMERA
-       --------------------------------------- */
+
+    /* ========================================================
+       CAMERA-RELATIVE MOVEMENT
+       ======================================================== */
 
     const forward=
         new THREE.Vector3(
-
             Math.sin(cameraYaw),
-
             0,
-
             -Math.cos(cameraYaw)
         );
 
 
     const right=
         new THREE.Vector3(
-
             Math.cos(cameraYaw),
-
             0,
-
             Math.sin(cameraYaw)
         );
 
@@ -2044,6 +2617,9 @@ function animate(){
         );
 
 
+    let actualSpeed=0;
+
+
     if(
         movement.lengthSq()>0
     ){
@@ -2051,41 +2627,40 @@ function animate(){
         movement.normalize();
 
 
-        const speed=
-            riding
-            ? 20
-            : 8;
+        actualSpeed=
+            strength*
+            (
+                riding
+                ?20
+                :8
+            );
 
 
         if(riding){
 
-            dolphin.position
-                .addScaledVector(
-                    movement,
-                    speed*
-                    dt*
-                    strength
-                );
+            dolphin.position.addScaledVector(
+                movement,
+                actualSpeed*dt
+            );
 
         }else{
 
-            player.position
-                .addScaledVector(
-                    movement,
-                    speed*
-                    dt*
-                    strength
-                );
+            player.position.addScaledVector(
+                movement,
+                actualSpeed*dt
+            );
         }
 
 
-        /*
-           Normal camera mode:
-           character faces movement.
+        /* ====================================================
+           SHIFT LOCK
 
-           Shift lock:
-           character faces camera direction.
-        */
+           Character faces exactly where
+           the camera is facing.
+
+           NO CAMERA-YAW FEEDBACK.
+           NO SPINNING.
+           ==================================================== */
 
         if(shiftLock){
 
@@ -2094,57 +2669,82 @@ function animate(){
 
         }else{
 
-            const targetRotation=
+            /*
+               Normal mode:
+               face direction of movement.
+            */
+
+            const desiredRotation=
                 Math.atan2(
                     movement.x,
                     movement.z
                 );
 
-            player.rotation.y=
+            let difference=
+                desiredRotation-
+                player.rotation.y;
+
+
+            while(
+                difference>Math.PI
+            )
+                difference-=Math.PI*2;
+
+
+            while(
+                difference<-Math.PI
+            )
+                difference+=Math.PI*2;
+
+
+            player.rotation.y+=
+                difference*.14;
+        }
+    }
+
+
+    /* ========================================================
+       TERRAIN HEIGHT
+       ======================================================== */
+
+    if(!riding){
+
+        const groundY=
+            terrainHeight(
+                player.position.x,
+                player.position.z
+            )+.67;
+
+
+        /*
+           Keep character above ground
+           unless jumping.
+        */
+
+        if(!jumping){
+
+            player.position.y=
                 THREE.MathUtils.lerp(
-                    player.rotation.y,
-                    targetRotation,
-                    .15
+                    player.position.y,
+                    groundY,
+                    .3
                 );
         }
     }
 
 
-    /* ---------------------------------------
-       SHIFT LOCK CAMERA
-       --------------------------------------- */
-
-    if(shiftLock){
-
-        /*
-          Camera stays behind character.
-        */
-
-        const targetYaw=
-            player.rotation.y;
-
-        cameraYaw=
-            THREE.MathUtils.lerp(
-                cameraYaw,
-                targetYaw,
-                .04
-            );
-    }
-
-
-    /* ---------------------------------------
+    /* ========================================================
        JUMP
-       --------------------------------------- */
+       ======================================================== */
 
     if(jumping){
 
-        verticalVelocity -=
-            25*dt;
+        verticalVelocity-=25*dt;
 
 
         if(riding){
 
-            dolphin.position.y +=
+            dolphin.position.y+=
                 verticalVelocity*dt;
 
 
@@ -2161,15 +2761,23 @@ function animate(){
 
         }else{
 
-            player.position.y +=
+            player.position.y+=
                 verticalVelocity*dt;
 
 
+            const groundY=
+                terrainHeight(
+                    player.position.x,
+                    player.position.z
+                )+.67;
+
+
             if(
-                player.position.y<=.65
+                player.position.y<=groundY
             ){
 
-                player.position.y=.65;
+                player.position.y=
+                    groundY;
 
                 verticalVelocity=0;
 
@@ -2179,62 +2787,100 @@ function animate(){
     }
 
 
-    /* ---------------------------------------
+    /* ========================================================
        DOLPHIN
-       --------------------------------------- */
+       ======================================================== */
 
     dolphin.rotation.z=
-        Math.sin(time*2.5)*.035;
+        Math.sin(time*2.6)*.035;
 
 
-    dolphin.position.y +=
-        Math.sin(time*3)*.008;
+    if(!riding){
+
+        dolphin.position.y=
+            -.2+
+            Math.sin(time*2.2)*.12;
+    }
 
 
     if(riding){
+
+        dolphin.position.y+=
+            Math.sin(time*4)*.006;
+
 
         player.position.copy(
             dolphin.position
         );
 
-        player.position.y+=2.1;
+        player.position.y+=2.2;
 
         player.rotation.y=
             cameraYaw;
     }
 
 
-    /* ---------------------------------------
-       NPC IDLE
-       --------------------------------------- */
+    /* ========================================================
+       PLAYER ANIMATION
+       ======================================================== */
+
+    animateCharacter(
+        player,
+        actualSpeed,
+        time,
+        dt
+    );
+
+
+    /* ========================================================
+       NPC ANIMATION
+       ======================================================== */
 
     npcs.forEach(
         (npc,index)=>{
 
+            const npcTime=
+                time+
+                index*1.7;
+
+
             npc.position.y=
-                .65+
+                terrainHeight(
+                    npc.position.x,
+                    npc.position.z
+                )+.67+
                 Math.sin(
-                    time*1.4+
-                    index
-                )*.045;
+                    npcTime*1.4
+                )*.025;
+
+
+            animateCharacter(
+                npc,
+                .8,
+                npcTime,
+                dt
+            );
         }
     );
 
 
-    /* ---------------------------------------
+    /* ========================================================
        BUBBLES
-       --------------------------------------- */
+       ======================================================== */
 
     bubbles.forEach(
         (bubble,index)=>{
 
-            bubble.position.y +=
+            bubble.position.y+=
                 dt*
-                (.25+
-                (index%4)*.12);
+                (
+                    .22+
+                    (index%5)*.1
+                );
 
-            bubble.rotation.y +=
-                dt*.5;
+
+            bubble.rotation.y+=
+                dt*.4;
 
 
             if(
@@ -2247,24 +2893,20 @@ function animate(){
     );
 
 
-    /* ---------------------------------------
-       ROBLOX-STYLE CAMERA FOLLOW
-       --------------------------------------- */
+    /* ========================================================
+       ROBLOX-LIKE CAMERA
+       ======================================================== */
 
     const target=
         riding
-        ? dolphin
-        : player;
+        ?dolphin
+        :player;
 
-
-    /*
-       Smooth zoom distance.
-    */
 
     const targetDistance=
         riding
-        ? 17
-        : 13;
+        ?17
+        :13;
 
 
     cameraDistance=
@@ -2276,58 +2918,63 @@ function animate(){
 
 
     /*
-       Spherical camera position.
+       Shift Lock:
+
+       Camera stays behind the character.
+
+       Normal:
+
+       Camera stays behind the camera
+       orientation.
     */
 
     const horizontal=
-        Math.cos(cameraPitch)*
+        Math.cos(
+            cameraPitch
+        )*
         cameraDistance;
 
 
-    const desiredX=
+    const desiredCameraX=
         target.position.x-
         Math.sin(cameraYaw)*
         horizontal;
 
 
-    const desiredZ=
+    const desiredCameraZ=
         target.position.z+
         Math.cos(cameraYaw)*
         horizontal;
 
 
-    const desiredY=
+    const desiredCameraY=
         target.position.y+
-        3+
+        3.4+
         Math.sin(cameraPitch)*
         cameraDistance;
 
 
-    /*
-       Smooth Roblox-like follow.
-    */
-
     camera.position.x=
         THREE.MathUtils.lerp(
             camera.position.x,
-            desiredX,
-            .12
+            desiredCameraX,
+            .13
         );
 
 
     camera.position.y=
         THREE.MathUtils.lerp(
             camera.position.y,
-            desiredY,
-            .12
+            desiredCameraY,
+            .13
         );
 
 
     camera.position.z=
         THREE.MathUtils.lerp(
             camera.position.z,
-            desiredZ,
-            .12
+            desiredCameraZ,
+            .13
         );
 
 
@@ -2338,18 +2985,18 @@ function animate(){
     );
 
 
-    /* ---------------------------------------
-       WATER
-       --------------------------------------- */
+    /* ========================================================
+       WATER ANIMATION
+       ======================================================== */
 
     water.position.y=
-        -1.55+
-        Math.sin(time)*.018;
+        -1.8+
+        Math.sin(time)*.015;
 
 
-    /* ---------------------------------------
+    /* ========================================================
        RENDER
-       --------------------------------------- */
+       ======================================================== */
 
     renderer.render(
         scene,
@@ -2361,34 +3008,26 @@ function animate(){
 animate();
 
 
-/* =========================================================
+/* ============================================================
    RESIZE
-   ========================================================= */
+   ============================================================ */
 
 function resize(){
 
-    const width=
-        innerWidth;
-
-    const height=
-        innerHeight;
-
-
     camera.aspect=
-        width/height;
+        innerWidth/
+        innerHeight;
 
     camera.updateProjectionMatrix();
 
-
     renderer.setSize(
-        width,
-        height
+        innerWidth,
+        innerHeight
     );
-
 
     renderer.setPixelRatio(
         Math.min(
-            devicePixelRatio,
+            window.devicePixelRatio,
             2
         )
     );
@@ -2404,7 +3043,6 @@ window.addEventListener(
     "orientationchange",
     resize
 );
-
 
 resize();
 
